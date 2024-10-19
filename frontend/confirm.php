@@ -7,7 +7,7 @@ function redirect() {
 if (!isset($_GET['email']) || !isset($_GET['token'])) {
     redirect();
 } else {
-    $con = mysqli_connect('localhost', 'root', '', 'practicle_9');
+    $con = mysqli_connect('localhost', 'root', '', 'hostel-manage');
 
     if (!$con) {
         die("Connection failed: " . mysqli_connect_error());

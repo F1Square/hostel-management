@@ -129,17 +129,20 @@
             text-align: center;
             padding: 15px;
         }
+        .logo a {
+    text-decoration: none;
+}
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <header>
         <div class="logo">
-            <h1>Pateldham</h1>
+        <a href="index.php"><h1>Pateldham </h1></a>
         </div>
         <div class="auth-buttons">
-            <a href="#" class="btn">Login</a>
-            <a href="#" class="btn">Sign Up</a>
+            <a href="login.php" class="btn">Login</a>
+            <a href="register.php" class="btn">Sign Up</a>
         </div>
     </header>
 

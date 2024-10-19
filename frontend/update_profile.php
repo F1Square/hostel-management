@@ -10,7 +10,7 @@ if (!isset($_SESSION['email'])) {
 $msg = "";
 
 try {
-    $dsn = 'mysql:host=localhost;dbname=practicle_9';
+    $dsn = 'mysql:host=localhost;dbname=hostel-manage';
     $pdo = new PDO($dsn, 'root', '', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC

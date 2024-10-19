@@ -8,7 +8,7 @@ require 'PHPMailer/SMTP.php';
 
 $msg = "";
 if (isset($_POST['submit'])) {
-    $con = new mysqli('localhost', 'root', '', 'practicle_9');
+    $con = new mysqli('localhost', 'root', '', 'hostel-manage');
     if ($con->connect_error) {
         die("Connection failed: " . $con->connect_error);
     }
@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
             $mail->isHTML(true);
             $mail->Body = "Hello $name, <br>
             Please click on the link below to reset your password.<br><br>
-            <a href='http://localhost/practicle_91/newpassword.php?email=$email&token=$token'>Reset Password</a>"; 
+            <a href='http://localhost/hostel-manage/frontend/newpassword.php?email=$email&token=$token'>Reset Password</a>"; 
             
             if ($mail->send()) {
                 $msg = "<div class='alert alert-dismissible alert-success'>

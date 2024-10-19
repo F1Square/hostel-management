@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($con->query($sql) === TRUE) {
         echo "Password updated successfully.";
         // Redirect to login or success page
-        header('Location: login.php?reset=success');
+        header('Location: login.php');
     } else {
         echo "Error updating password: " . $con->error;
     }
@@ -51,11 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container text-center" style="padding-top:4%;">
         <h3 class="display-4"> Reset Password </h3>
         
-        <?php
+        <!-- <?php
         if (!empty($msg)) {
             echo $msg; 
         }
-        ?>
+        ?> -->
 
         <form action="setPass.php" method="post">
             <p> Reset password for <?php echo htmlspecialchars($email); ?> </p><br>
