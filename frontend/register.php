@@ -93,7 +93,7 @@ if (isset($_POST['submit'])) {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                $mail->setFrom('agb709443@gmail.com', 'Abhi');
+                $mail->setFrom('agb709443@gmail.com', 'Hostel Management System');
                 $mail->addAddress($email, $name);
                 $mail->Subject = "Please verify your email!";
                 $mail->isHTML(true);
