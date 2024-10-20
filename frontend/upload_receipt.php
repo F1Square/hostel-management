@@ -1,42 +1,60 @@
 <?php
-session_start(); // Assuming session is being used to track logged-in user info
+session_start();
+$conn = new mysqli('localhost', 'username', 'password', 'hostel_management');
 
-// Connect to your database
-include 'db_connection.php'; // Make sure to include your database connection file
-
-// Check if a file has been uploaded
-if (isset($_FILES['receiptFile']) && $_FILES['receiptFile']['error'] == 0) {
-    $targetDir = "uploads/"; // Directory to save uploaded files
-    $fileName = basename($_FILES["receiptFile"]["name"]);
-    $targetFilePath = $targetDir . $fileName;
-
-    // Allow certain file formats (you can extend this if needed)
-    $allowedTypes = array('jpg', 'png', 'jpeg', 'pdf');
-    $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-
-    if (in_array(strtolower($fileType), $allowedTypes)) {
-        // Move uploaded file to server directory
-        if (move_uploaded_file($_FILES["receiptFile"]["tmp_name"], $targetFilePath)) {
-            // Get student ID or other info from session
-            $studentId = $_SESSION['student_id']; // Assuming logged-in student has ID stored in session
-            
-            // Insert file info and status into database
-            $query = "INSERT INTO fee_uploads (student_id, file_path, status) VALUES ('$studentId', '$targetFilePath', 'Pending')";
-            if (mysqli_query($conn, $query)) {
-                $_SESSION['uploadSuccess'] = "Receipt uploaded successfully!";
-            } else {
-                $_SESSION['uploadError'] = "Failed to save receipt information in the database.";
-            }
-        } else {
-            $_SESSION['uploadError'] = "Sorry, there was an error uploading your file.";
-        }
-    } else {
-        $_SESSION['uploadError'] = "Sorry, only JPG, JPEG, PNG & PDF files are allowed.";
-    }
-} else {
-    $_SESSION['uploadError'] = "Please select a file to upload.";
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Redirect back to the main page after upload
-header("Location: hostel_fees.php");
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $userId = $_SESSION['user_id']; // Assuming user ID is stored in session
+    $targetDir = "uploads/"; // Directory for uploaded receipts
+    $targetFile = $targetDir . basename($_FILES["receiptFile"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+    // Check if file is an image
+    if (isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["receiptFile"]["tmp_name"]);
+        if ($check === false) {
+            echo "File is not an image.";
+            $uploadOk = 0;
+        }
+    }
+
+    // Check if file already exists
+    if (file_exists($targetFile)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES["receiptFile"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    } else {
+        if (move_uploaded_file($_FILES["receiptFile"]["tmp_name"], $targetFile)) {
+            // Insert file info into database
+            $stmt = $conn->prepare("INSERT INTO receipts (user_id, file_path) VALUES (?, ?)");
+            $stmt->bind_param("is", $userId, $targetFile);
+            $stmt->execute();
+            echo "The file " . htmlspecialchars(basename($_FILES["receiptFile"]["name"])) . " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+}
+
+$conn->close();
 ?>
