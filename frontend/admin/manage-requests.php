@@ -154,7 +154,7 @@ $con->close();
 <body>
     <div class="sidebar">
         <ul class="menu">
-            <li><a href="hostel-fees.php">Hostel Fees</a></li>
+            <li><a href="AdminHostelFees.php">Hostel Fees</a></li>
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             

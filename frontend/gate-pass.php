@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle form submissiona
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $otr_number = $_POST['otr_number']; // Get the OTR number of the logged-in student
     $type = $_POST['type'];
@@ -23,7 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date_from = $_POST['date_from'];
     $date_to = $_POST['date_to'];
     
-
     // Insert into gatepass table
     $sql = "INSERT INTO gatepass (otr_number, type, reason, out_time, in_time, date_from, date_to, status) 
             VALUES ('$otr_number', '$type', '$reason', '$out_time', '$in_time', '$date_from', '$date_to', 'pending')";
@@ -113,6 +112,44 @@ $conn->close();
             text-decoration: none;
         }
 
+        /* User Profile and Dropdown Styles */
+        .user {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .user .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .user .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user .show {
+            display: block;
+        }
+
         .main-content {
             padding: 20px;
         }
@@ -168,6 +205,24 @@ $conn->close();
             background-color: #2379a1;
         }
     </style>
+    <script>
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.user img')) {
+                var dropdowns = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -177,7 +232,6 @@ $conn->close();
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
-            <li><a href="reporting-history.php">Reporting History</a></li>
             <li><a href="change-password.php">Change Password</a></li>
         </ul>
     </div>
@@ -186,7 +240,12 @@ $conn->close();
         <div class="top-bar">
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <span>Student</span>
+                <!-- Profile image -->
+                <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">
+                <!-- Dropdown menu -->
+                <div id="dropdown" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
             </div>
         </div>
 
@@ -220,6 +279,7 @@ $conn->close();
                             <option value="Shopping">Shopping</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="out_time">Approximate Out Time:</label>
                         <input type="time" id="out_time" name="out_time" required>
@@ -239,7 +299,6 @@ $conn->close();
                         <label for="date_to">Date To:</label>
                         <input type="date" id="date_to" name="date_to" required>
                     </div>
-
 
                     <div class="form-group">
                         <button type="submit">Submit Request</button>

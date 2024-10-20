@@ -127,6 +127,44 @@ $con->close();
             text-decoration: none;
         }
 
+        .user {
+            display: flex;
+            align-items: center;
+            position: relative; /* For dropdown positioning */
+        }
+
+        .user img {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+            border-radius: 50%;
+            cursor: pointer; /* Change cursor to pointer for the profile picture */
+        }
+        .dropdown {
+            display: none;
+            /* Initially hidden */
+            position: absolute;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 90px;
+            z-index: 1000;
+            /* Ensure it appears above other elements */
+        }
+
+        .dropdown a {
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+
         .main-content {
             padding: 20px;
         }
@@ -149,10 +187,27 @@ $con->close();
             }
         }
     </style>
+     <script>
+        // Toggle dropdown visibility
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close dropdown if clicked outside
+        window.onclick = function (event) {
+            if (!event.target.matches('.profile-pic')) {
+                const dropdowns = document.getElementsByClassName("dropdown");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].style.display = "none";
+                }
+            }
+        };
+    </script>
 </head>
 
 <body>
-    <div class="sidebar">
+<div class="sidebar">
         <ul class="menu">
             <li><a href="AdminHostelFees.php">Hostel Fees</a></li>
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
@@ -162,10 +217,15 @@ $con->close();
     </div>
 
     <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
+    <div class="top-bar">
+        <h1><a href="dashboard.php" style="color: white; text-decoration: none;">SDHOSTEL</a></h1>
+
             <div class="user">
-                <span>Admin</span>
+               
+                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
+                <div id="dropdown-menu" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
             </div>
         </div>
 

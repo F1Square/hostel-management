@@ -1,7 +1,9 @@
 <div class="top-bar">
-<h1><a href="dashboard.php"> SDHOSTEL</a></h1>
+    <h1><a href="dashboard.php">SDHOSTEL</a></h1>
     <div class="user">
-        <span>Student</span>
-       
+       <img src="photos/Gpay.png" alt="User Image" onclick="toggleDropdown()">
+        <div id="logoutDropdown" class="dropdown">
+            <a href="../logout.php">Logout</a>
+        </div>
     </div>
 </div>

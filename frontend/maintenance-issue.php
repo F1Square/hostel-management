@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Textarea styling */
+        
         textarea {
             resize: none; /* Disable resizing */
             padding: 10px; /* Inner padding */
@@ -48,7 +49,72 @@
         input[type="submit"]:active {
             background-color: #1a6d99; /* Even darker shade on active */
         }
+
+        /* Top bar styling */
+        .top-bar {
+            background-color: #2c91c1;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar .user {
+            position: relative;
+            display: inline-block;
+        }
+
+        .top-bar .user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .top-bar .user .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .top-bar .user .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .top-bar .user .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .top-bar .user .show {
+            display: block;
+        }
     </style>
+    <script>
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.user img')) {
+                var dropdowns = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body>
     <?php 
@@ -56,12 +122,20 @@
     include 'sidebar.php'; 
     ?>
     <div class="content">
-        <?php include 'topbar.php'; ?>
+        <div class="top-bar">
+            <h1>Maintenance Issue</h1>
+            <div class="user">
+                <!-- Profile image that triggers the dropdown -->
+                <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">
+                <!-- Dropdown menu for logout -->
+                <div id="dropdown" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
+        </div>
         <div class="main-content">
-            <h2>Maintenance Issue</h2>
-           
-            <form action="submit_issue.php" method="post"> <!-- Change action to your submission script -->
-                <label for="issue">Describe the maintenance issue:</label>
+            <h2>Describe the maintenance issue:</h2>
+            <form action="submit_issue.php" method="post">
                 <textarea id="issue" name="issue" rows="10" required></textarea>
                 <input type="submit" value="Submit Issue">
             </form>

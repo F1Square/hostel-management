@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDHostel - Change Password</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* CSS styles omitted for brevity; keep the previous styles */
         * {
             margin: 0;
             padding: 0;
@@ -75,6 +75,43 @@
             text-decoration: none;
         }
 
+        .user {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user img {
+            width: 40px; /* Size of the dummy image */
+            height: 40px; /* Size of the dummy image */
+            border-radius: 50%; /* Make it round */
+            cursor: pointer;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
+        }
+
         .main-content {
             padding: 20px;
         }
@@ -128,6 +165,23 @@
             background-color: #2379a1;
         }
     </style>
+    <script>
+        function toggleDropdown() {
+            document.getElementById("logoutDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.user img')) {
+                var dropdowns = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -137,7 +191,6 @@
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
-            <li><a href="reporting-history.php">Reporting History</a></li>
             <li><a href="change-password.php">Change Password</a></li>
         </ul>
     </div>
@@ -146,7 +199,10 @@
         <div class="top-bar">
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <span>Student</span>
+                <img src="photos/Gpay.png" alt="User Image" onclick="toggleDropdown()">
+                <div id="logoutDropdown" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
             </div>
         </div>
 
@@ -170,6 +226,7 @@
                         <button type="submit">Submit</button>
                     </div>
                 </form>
+            
             </div>
         </div>
     </div>

@@ -113,7 +113,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
+            margin-top: 90px;
             z-index: 1000; /* Ensure it appears above other elements */
         }
 
@@ -164,6 +164,7 @@
             }
         }
     </style>
+
     <script>
         // Toggle dropdown visibility
         function toggleDropdown() {
@@ -189,7 +190,6 @@
             <li><a href="AdminHostelFees.php">Hostel Fees</a></li>
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-          
         </ul>
     </div>
 
@@ -197,8 +197,9 @@
         <div class="top-bar">
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <span>Rector</span>
-                <img src="../photos/image1.jpeg alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
+                
+                <!-- Fixed the missing quote in the src attribute -->
+                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
                 <div id="dropdown-menu" class="dropdown">
                     <a href="logout.php">Logout</a>
                 </div>

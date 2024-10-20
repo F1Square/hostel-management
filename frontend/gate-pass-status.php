@@ -113,6 +113,43 @@ $con->close(); // Close the connection
             text-decoration: none;
         }
 
+        .user {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .user .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .user .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user .show {
+            display: block;
+        }
+
         .main-content {
             padding: 20px;
         }
@@ -135,6 +172,24 @@ $con->close(); // Close the connection
             }
         }
     </style>
+    <script>
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.user img')) {
+                var dropdowns = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -144,7 +199,6 @@ $con->close(); // Close the connection
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
-            <li><a href="reporting-history.php">Reporting History</a></li>
             <li><a href="change-password.php">Change Password</a></li>
         </ul>
     </div>
@@ -153,7 +207,12 @@ $con->close(); // Close the connection
         <div class="top-bar">
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <span>Student</span>
+                <!-- Profile image -->
+                <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">
+                <!-- Dropdown menu -->
+                <div id="dropdown" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
             </div>
         </div>
 

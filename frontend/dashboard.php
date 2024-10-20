@@ -26,22 +26,7 @@
             color: white;
             padding: 20px;
             position: fixed;
-            /* Keep the sidebar fixed on the left */
             height: 100%;
-        }
-
-        .sidebar .profile {
-            text-align: center;
-        }
-
-        .sidebar .profile img {
-            width: 50px;
-            border-radius: 50%;
-        }
-
-        .username {
-            margin-top: 10px;
-            font-size: 18px;
         }
 
         .menu {
@@ -51,8 +36,6 @@
 
         .menu li {
             padding: 10px 0;
-            display: flex;
-            align-items: center;
             cursor: pointer;
         }
 
@@ -62,17 +45,13 @@
 
         .menu li a {
             text-decoration: none;
-            /* Remove underline from links */
             color: white;
-            /* Set button (link) color to white */
-            width: 100%;
             display: block;
             padding-left: 10px;
         }
 
         .menu li a:hover {
             color: #ddd;
-            /* Optional hover color */
         }
 
         .content {
@@ -80,7 +59,6 @@
             display: flex;
             flex-direction: column;
             margin-left: 250px;
-            /* Adjust for the sidebar width */
         }
 
         .top-bar {
@@ -97,35 +75,45 @@
         }
 
         .user {
-            display: flex;
-            align-items: center;
+            position: relative;
+            display: inline-block;
         }
 
         .user img {
-            width: 30px;
-            height: 30px;
-            margin-left: 10px;
-            border-radius: 50%;
+            width: 30px; /* Size of the dummy image */
+            height: 30px; /* Size of the dummy image */
+            border-radius: 50%; /* Make it round */
+            cursor: pointer;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
             text-decoration: none;
-            /* Remove underline from image inside links */
+        }
+
+        .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
         }
 
         .main-content {
             padding: 20px;
         }
-
-        .top-bar h1 a {
-            color: white;
-            /* Set the link color to white */
-            text-decoration: none;
-            /* Remove underline from the link */
-        }
-
-        .top-bar h1 a:hover {
-            color: #ddd;
-            /* Optional: Change color on hover */
-        }
-
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -150,29 +138,47 @@
             }
         }
     </style>
+    <script>
+        function toggleDropdown() {
+            document.getElementById("logoutDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.user img')) {
+                var dropdowns = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
     <div class="sidebar">
-
         <ul class="menu">
             <li><a href="hostel-fees.php">Hostel Fees</a></li>
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
-            <li><a href="reporting-history.php">Reporting History</a></li>
             <li><a href="change-password.php">Change Password</a></li>
         </ul>
     </div>
 
     <div class="content">
         <div class="top-bar">
-            <h1><a href="dashboard.php"> SDHOSTEL</a></h1>
+            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <span>Student</span>
-
+                <img src="photos/Gpay.png" alt="User Image" onclick="toggleDropdown()">
+                <div id="logoutDropdown" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
             </div>
         </div>
+
         <div class="main-content">
             <!-- Main content goes here -->
         </div>
