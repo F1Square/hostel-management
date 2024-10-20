@@ -66,9 +66,21 @@ if (isset($_POST['submit'])) {
             $token = bin2hex(random_bytes(5)); // Generates a random token
             $hashedPassword = password_hash($password1, PASSWORD_BCRYPT);
 
+            $result = $con->query("SELECT otr_number FROM users ORDER BY id DESC LIMIT 1");
+            $lastOTR = $result->fetch_assoc();
+
+            if ($lastOTR) {
+                $lastOTRNumber = (int)substr($lastOTR['otr_number'], 2); // Get the last 4 digits
+                $newOTRNumber = $lastOTRNumber + 1; // Increment by 2
+            } else {
+                $newOTRNumber = 1; // If no users, start with 0001
+            }
+
+            $OTRNumber = '24' . str_pad($newOTRNumber, 4, '0', STR_PAD_LEFT);
+
             // Insert new user using prepared statement
-            $stmt = $con->prepare("INSERT INTO users (firstName, email, password, isEmailConfirmed, token, keyToken) VALUES (?, ?, ?, 0, ?, ?)");
-            $stmt->bind_param("sssss", $name, $email, $hashedPassword, $token, $token);
+            $stmt = $con->prepare("INSERT INTO users (firstName, email, password, otr_number, isEmailConfirmed, token, keyToken) VALUES (?, ?, ?, ?, 0, ?, ?)");
+            $stmt->bind_param("ssssss", $name, $email, $hashedPassword, $OTRNumber, $token, $token);
 
             if ($stmt->execute()) {
                 // Send verification email
