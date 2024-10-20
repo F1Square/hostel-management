@@ -20,19 +20,33 @@ if (isset($_SESSION['errMsg'])) {
 }
 
 if (isset($_POST['submit'])) {
-    $con = new mysqli('localhost', 'root', '', 'practicle_9');
-    
+    $con = new mysqli('localhost', 'root', '', 'hostel-manage');
+
     $email = $con->real_escape_string($_POST['email']);
     $password = $con->real_escape_string($_POST['password']);
+
+    // Dummy admin credentials
+    $adminEmail = 'admin@example.com';
+    $adminPassword = 'admin123';
 
     if (empty($email) || empty($password)) {
         $msg = "<div class='alert alert-dismissible alert-warning'>
         <button type='button' class='close' data-dismiss='alert'>&times;</button>
         Please fill in all fields. </div>";
     } else {
-        // Check user existence and validate credentials
-        $sql = $con->query("SELECT id, password, isEmailConfirmed FROM users WHERE email='$email'");
-        
+        // Check for dummy admin credentials first
+        if ($email === $adminEmail && $password === $adminPassword) {
+            // Set session variables for admin
+            $_SESSION['email'] = $email;
+            $_SESSION['loggedIn'] = 1;
+            $_SESSION['role'] = 'admin'; // Set role as admin
+            header('Location: admin/dashboard.php'); // Redirect to the dashboard
+            exit();
+        }
+
+        // Check user existence and validate credentials from the database
+        $sql = $con->query("SELECT id, password, isEmailConfirmed, otr_number FROM users WHERE email='$email'");
+
         if ($sql->num_rows > 0) {
             $data = $sql->fetch_assoc();
             if (password_verify($password, $data['password'])) {
@@ -41,9 +55,11 @@ if (isset($_POST['submit'])) {
                     <button type='button' class='close' data-dismiss='alert'>&times;</button>
                     Please verify your email! </div>";
                 } else {
+                    // Set session variables for regular users
                     $_SESSION['email'] = $email;
                     $_SESSION['loggedIn'] = 1;
-                    header('Location: dashboard.php');
+                    $_SESSION['otr_number'] = $data['otr_number'];
+                    header('Location: dashboard.php'); // Redirect to the dashboard
                     exit();
                 }
             } else {
@@ -71,13 +87,15 @@ if (isset($_POST['submit'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 </head>
+
 <body>
     <div class="container" style="margin-top: 100px;">
         <div class="row justify-content-center">
             <div class="col-md-6 col-md-offset-3" align="center">
                 <h1 class="display-3"> Login </h1> <br>
-                <?php 
-                if ($msg != "") echo $msg."<br>"; 
+                <?php
+                if ($msg != "")
+                    echo $msg . "<br>";
                 ?>
 
                 <form method="post" action="login.php">

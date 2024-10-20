@@ -1,23 +1,3 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-session_start();
-
-$conn = new mysqli('localhost', 'root', '', 'hostel-manage');
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$userId = $_SESSION['user_id']; // Assuming user ID is stored in session
-
-$result = $conn->query("SELECT * FROM receipts WHERE user_id = $userId AND approved = 1");
-
-if (!$result) {
-    die("Query failed: " . $conn->error); // Added error handling for the query
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,61 +6,94 @@ if (!$result) {
     <title>Hostel Fees</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
+        /* Your existing styles here */
+        /* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            position: relative;
-            text-align: center;
-            width: 400px;
-        }
+h2, h3 {
+    color: #333;
+}
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 20px;
-            cursor: pointer;
-        }
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+    justify-content: center; /* Center modal */
+    align-items: center; /* Center modal */
+}
 
-        img {
-            margin-top: 10px;
-            border-radius: 10px;
-            width: 100px; /* Adjust image width */
-            height: auto; /* Maintain aspect ratio */
-        }
+.modal-content {
+    background-color: #fefefe; /* White background */
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    text-align: center;
+    width: 400px;
+}
 
-        /* Button styles */
-        #openModal {
-            background-color: #2c91c1;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
 
-        #openModal:hover {
-            background-color: #1f6f95;
-        }
+/* Image styles */
+img {
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 100%; /* Full width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Button styles */
+button {
+    background-color: #2c91c1; /* Default background color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Add padding */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #1f6f95; /* Darker blue on hover */
+}
+
+/* Receipt List Styles */
+.receipts-list {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
     </style>
 </head>
 <body>
+<?php
+session_start();
+
+if (isset($_GET['success']) && $_GET['success'] == 1) {
+    echo '<script>alert("Receipt uploaded successfully!");</script>';
+}
+?>
+
     <?php include 'sidebar.php'; ?>
     <div class="content">
         <?php include 'topbar.php'; ?>
@@ -90,22 +103,7 @@ if (!$result) {
             <button id="openModal">View Bank Details</button>
 
             <h3>Your Approved Receipts</h3>
-            <?php if ($result->num_rows > 0): ?>
-                <table border="1">
-                    <tr>
-                        <th>Receipt</th>
-                        <th>Upload Date</th>
-                    </tr>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><img src="<?php echo $row['file_path']; ?>" alt="Receipt"></td>
-                        <td><?php echo $row['upload_date']; ?></td>
-                    </tr>
-                    <?php endwhile; ?>
-                </table>
-            <?php else: ?>
-                <p>No approved receipts available.</p>
-            <?php endif; ?>
+            <!-- Fetch and display approved receipts here -->
         </div>
 
         <!-- Modal for showing image and upload form -->
@@ -118,6 +116,7 @@ if (!$result) {
                 <div class="upload-section" id="uploadSection">
                     <p>Upload your transaction photos:</p>
                     <form id="receiptUploadForm" action="upload_receipt.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="otr_number" value="<?php echo htmlspecialchars($otr_number_value); ?>">
                         <input type="file" id="fileInput" name="receiptFile" required>
                         <button type="submit" id="uploadBtn">Upload Receipt</button>
                     </form>
@@ -127,27 +126,30 @@ if (!$result) {
     </div>
 
     <script>
-        // Get elements
-        var modal = document.getElementById('modal');
-        var openModalBtn = document.getElementById('openModal');
-        var closeModalBtn = document.getElementById('closeModal');
+        // Your existing scripts here
 
-        // Open the modal when the button is clicked
-        openModalBtn.addEventListener('click', function () {
-            modal.style.display = 'flex';
-        });
+var modal = document.getElementById('modal');
+var openModalBtn = document.getElementById('openModal');
+var closeModalBtn = document.getElementById('closeModal');
 
-        // Close the modal when the close button is clicked
-        closeModalBtn.addEventListener('click', function () {
-            modal.style.display = 'none';
-        });
+// Open the modal when the button is clicked
+openModalBtn.addEventListener('click', function () {
+    modal.style.display = 'flex';
+});
 
-        // Close the modal if clicked outside of the modal content
-        window.onclick = function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
+// Close the modal when the close button is clicked
+closeModalBtn.addEventListener('click', function () {
+    modal.style.display = 'none';
+});
+
+// Close the modal if clicked outside of the modal content
+window.onclick = function (event) {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+
+
     </script>
 </body>
 </html>

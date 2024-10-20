@@ -51,7 +51,10 @@
     </style>
 </head>
 <body>
-    <?php include 'sidebar.php'; ?>
+    <?php 
+    session_start(); // Start the session
+    include 'sidebar.php'; 
+    ?>
     <div class="content">
         <?php include 'topbar.php'; ?>
         <div class="main-content">

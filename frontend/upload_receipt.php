@@ -1,58 +1,68 @@
 <?php
-session_start();
-$conn = new mysqli('localhost', 'username', 'password', 'hostel_management');
+session_start(); // Start the session to access session variables
 
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hostel-manage";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $userId = $_SESSION['user_id']; // Assuming user ID is stored in session
-    $targetDir = "uploads/"; // Directory for uploaded receipts
-    $targetFile = $targetDir . basename($_FILES["receiptFile"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate and handle the file upload
+    if (isset($_FILES['receiptFile']) && $_FILES['receiptFile']['error'] == 0) {
+        // Get the file info
+        $fileTmpPath = $_FILES['receiptFile']['tmp_name'];
+        $fileName = $_FILES['receiptFile']['name'];
+        
+        // Define the upload directory
+        $uploadFileDir = './uploads/';
+        $dest_path = $uploadFileDir . basename($fileName);
 
-    // Check if file is an image
-    if (isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["receiptFile"]["tmp_name"]);
-        if ($check === false) {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
-    }
+        // Move the uploaded file to the destination directory
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            // Get the OTR number from the session
+            if (isset($_SESSION['otr_number'])) {
+                $otr_number = $_SESSION['otr_number']; // Get the OTR number from the session
+                
+                // Check if otr_number exists in the users table
+                $stmt_check = $conn->prepare("SELECT COUNT(*) FROM users WHERE otr_number = ?");
+                $stmt_check->bind_param("s", $otr_number);
+                $stmt_check->execute();
+                $stmt_check->bind_result($count);
+                $stmt_check->fetch();
+                $stmt_check->close();
 
-    // Check if file already exists
-    if (file_exists($targetFile)) {
-        echo "Sorry, file already exists.";
-        $uploadOk = 0;
-    }
+                if ($count > 0) {
+                    // OTR number exists, proceed with the insertion
+                    $stmt = $conn->prepare("INSERT INTO receipts (otr_number, file_path) VALUES (?, ?)");
+                    $stmt->bind_param("ss", $otr_number, $dest_path);
 
-    // Check file size
-    if ($_FILES["receiptFile"]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
-        $uploadOk = 0;
-    }
-
-    // Allow certain file formats
-    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-    }
-
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
-    } else {
-        if (move_uploaded_file($_FILES["receiptFile"]["tmp_name"], $targetFile)) {
-            // Insert file info into database
-            $stmt = $conn->prepare("INSERT INTO receipts (user_id, file_path) VALUES (?, ?)");
-            $stmt->bind_param("is", $userId, $targetFile);
-            $stmt->execute();
-            echo "The file " . htmlspecialchars(basename($_FILES["receiptFile"]["name"])) . " has been uploaded.";
+                    if ($stmt->execute()) {
+                        echo "<script>alert('Receipt uploaded successfully!');</script>";
+                        echo "<script>window.location.href='hostel-fees.php';</script>"; // Redirect to hostel-fees.php
+                    } else {
+                        echo "<script>alert('Error inserting data: " . $stmt->error . "');</script>";
+                    }
+                    $stmt->close(); // Close statement
+                } else {
+                    echo "<script>alert('OTR number does not exist in users table.');</script>";
+                }
+            } else {
+                echo "<script>alert('OTR number is not set in the session.');</script>";
+            }
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            echo "<script>alert('There was an error moving the uploaded file.');</script>";
         }
+    } else {
+        echo "<script>alert('No file uploaded or there was an upload error.');</script>";
     }
 }
 

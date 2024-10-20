@@ -1,43 +1,317 @@
 <?php
-session_start();
-$conn = new mysqli('localhost', 'username', 'password', 'hostel_management');
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hostel-manage";
 
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (isset($_GET['approve'])) {
-    $receiptId = intval($_GET['approve']);
-    $conn->query("UPDATE receipts SET approved = 1 WHERE id = $receiptId");
+// Handle approval or rejection
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
+    $receipt_id = $_POST['receipt_id'];
+    $action = $_POST['action'];
+
+    if ($action == 'approve') {
+        $stmt = $conn->prepare("UPDATE receipts SET status = 'approved' WHERE id = ?");
+    } else {
+        $stmt = $conn->prepare("UPDATE receipts SET status = 'rejected' WHERE id = ?");
+    }
+
+    $stmt->bind_param("i", $receipt_id);
+    $stmt->execute();
+    $stmt->close();
 }
 
-// Fetch all receipts
-$result = $conn->query("SELECT r.id, r.file_path, u.username FROM receipts r JOIN users u ON r.user_id = u.id");
-
+// Fetch receipts
+$sql = "SELECT r.id, r.otr_number, r.file_path, r.status FROM receipts r";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Approve Receipts</title>
+    <title>Admin - Manage Receipts</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar .profile {
+            text-align: center;
+        }
+
+        .sidebar .profile img {
+            width: 50px;
+            border-radius: 50%;
+        }
+
+        .username {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .menu {
+            list-style-type: none;
+            margin-top: 20px;
+        }
+
+        .menu li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .menu li:hover {
+            background-color: #444;
+        }
+
+        .menu li a {
+            text-decoration: none;
+            color: white;
+            width: 100%;
+            display: block;
+            padding-left: 10px;
+        }
+
+        .menu li a:hover {
+            color: #ddd;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 250px;
+        }
+
+        .top-bar {
+            background-color: #2c91c1;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .top-bar h1 {
+            margin-left: 20px;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            position: relative;
+            /* For dropdown positioning */
+        }
+
+        .user img {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            /* Change cursor to pointer for the profile picture */
+        }
+
+        .dropdown {
+            display: none;
+            /* Initially hidden */
+            position: absolute;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            z-index: 1000;
+            /* Ensure it appears above other elements */
+        }
+
+        .dropdown a {
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+
+        .main-content {
+            padding: 20px;
+            flex: 1;
+            margin-top: 20px;
+            /* Adjusted margin for top spacing */
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .menu li {
+                text-align: center;
+            }
+
+            .menu li a {
+                padding-left: 0;
+            }
+        }
+    </style>
+
+    <script>
+        // Toggle dropdown visibility
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close dropdown if clicked outside
+        window.onclick = function (event) {
+            if (!event.target.matches('.profile-pic')) {
+                const dropdowns = document.getElementsByClassName("dropdown");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].style.display = "none";
+                }
+            }
+        };
+    </script>
 </head>
+
 <body>
-    <h2>Pending Receipts</h2>
-    <table border="1">
-        <tr>
-            <th>Username</th>
-            <th>Receipt</th>
-            <th>Action</th>
-        </tr>
-        <?php while ($row = $result->fetch_assoc()): ?>
-        <tr>
-            <td><?php echo $row['username']; ?></td>
-            <td><img src="<?php echo $row['file_path']; ?>" alt="Receipt" style="width:100px;height:auto;"></td>
-            <td><a href="?approve=<?php echo $row['id']; ?>">Approve</a></td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
+    <div class="sidebar">
+        <ul class="menu">
+            <li><a href="AdminHostelFees.php">Hostel Fees</a></li>
+            <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
+            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
+          
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="top-bar">
+        <h1><a href="dashboard.php" style="color: white; text-decoration: none;">SDHOSTEL</a></h1>
+
+            <div class="user">
+                <span>Rector</span>
+                <img src="../photos/image1.jpeg" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
+                <div id="dropdown-menu" class="dropdown">
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="main-content">
+            <h2>Manage Receipts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>OTR Number</th>
+                        <th>File Path</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                            
+                                <td><?php echo htmlspecialchars($row['otr_number']); ?></td>
+                                <td>
+                                    <a href="../<?php echo htmlspecialchars($row['file_path']); ?>" target="_blank">View
+                                        Receipt</a>
+                                </td>
+                                <td><?php echo ucfirst($row['status']); ?></td>
+                                <td>
+                                    <?php if ($row['status'] == 'pending'): ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="receipt_id" value="<?php echo $row['id']; ?>">
+                                            <button type="submit" name="action" value="approve"
+                                                style="padding: 5px 10px; background-color: green; color: white; border: none; cursor: pointer;">Approve</button>
+                                            <button type="submit" name="action" value="reject"
+                                                style="padding: 5px 10px; background-color: red; color: white; border: none; cursor: pointer;">Reject</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <span><?php echo ucfirst($row['status']); ?></span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5">No receipts found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
+
 </html>
+
+<?php
+$conn->close();
+?>

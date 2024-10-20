@@ -1,12 +1,33 @@
+<?php
+session_start(); // Start the session
+
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hostel-manage";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch maintenance issues from the database
+$sql = "SELECT id, otr_number, issue, submitted_at FROM maintenance_issues ORDER BY submitted_at DESC"; // You can adjust the order as needed
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDHostel</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Admin - Maintenance Issues</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
     <style>
+        /* Basic table styling */
         * {
             margin: 0;
             padding: 0;
@@ -149,34 +170,65 @@
                 padding-left: 0;
             }
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
-
 <body>
-    <div class="sidebar">
-
-        <ul class="menu">
-            <li><a href="hostel-fees.php">Hostel Fees</a></li>
-            <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
-            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-            <li><a href="gate-pass-status.php">Status</a></li>
-            <li><a href="reporting-history.php">Reporting History</a></li>
-            <li><a href="change-password.php">Change Password</a></li>
-        </ul>
-    </div>
-
+    <?php include 'sidebar.php'; ?> <!-- Include your sidebar -->
     <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php"> SDHOSTEL</a></h1>
-            <div class="user">
-                <span>Student</span>
-
-            </div>
-        </div>
+        <?php include 'topbar.php'; ?> <!-- Include your top bar -->
         <div class="main-content">
-            <!-- Main content goes here -->
+            <h2>Maintenance Issues</h2>
+            <table>
+                <thead>
+                    <tr>
+                    
+                        <th>OTR Number</th>
+                        <th>Issue</th>
+                        <th>Submitted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                
+                                <td><?php echo htmlspecialchars($row['otr_number']); ?></td>
+                                <td><?php echo htmlspecialchars($row['issue']); ?></td>
+                                <td><?php echo htmlspecialchars($row['submitted_at']); ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">No maintenance issues submitted.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>
-
 </html>
+
+<?php
+$conn->close();
+?>

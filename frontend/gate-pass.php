@@ -1,3 +1,41 @@
+<?php
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hostel-manage";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Handle form submissiona
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $otr_number = $_POST['otr_number']; // Get the OTR number of the logged-in student
+    $type = $_POST['type'];
+    $reason = $_POST['reason'];
+    $out_time = $_POST['out_time'];
+    $in_time = $_POST['in_time'];
+    $date_from = $_POST['date_from'];
+    $date_to = $_POST['date_to'];
+    
+
+    // Insert into gatepass table
+    $sql = "INSERT INTO gatepass (otr_number, type, reason, out_time, in_time, date_from, date_to, status) 
+            VALUES ('$otr_number', '$type', '$reason', '$out_time', '$in_time', '$date_from', '$date_to', 'pending')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "<script>alert('Gate pass request submitted successfully!');</script>";
+    } 
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -138,6 +176,7 @@
             <li><a href="hostel-fees.php">Hostel Fees</a></li>
             <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
+            <li><a href="gate-pass-status.php">Status</a></li>
             <li><a href="reporting-history.php">Reporting History</a></li>
             <li><a href="change-password.php">Change Password</a></li>
         </ul>
@@ -155,6 +194,11 @@
             <div class="form-container">
                 <h2>Gate Pass & Leave Request</h2>
                 <form action="gate-pass.php" method="POST">
+                    <div class="form-group">
+                        <label for="otr_number">OTR Number:</label>
+                        <input type="text" id="otr_number" name="otr_number" required>
+                    </div>
+
                     <div class="form-group">
                         <label for="type">Type:</label>
                         <select id="type" name="type" required>
@@ -176,7 +220,6 @@
                             <option value="Shopping">Shopping</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="out_time">Approximate Out Time:</label>
                         <input type="time" id="out_time" name="out_time" required>
@@ -188,14 +231,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="date_range">Date from:</label>
-                        <input type="date" id="date_range" name="date_range" required>
+                        <label for="date_from">Date From:</label>
+                        <input type="date" id="date_from" name="date_from" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="date_range">Date To:</label>
-                        <input type="date" id="date_range" name="date_range" required>
+                        <label for="date_to">Date To:</label>
+                        <input type="date" id="date_to" name="date_to" required>
                     </div>
+
 
                     <div class="form-group">
                         <button type="submit">Submit Request</button>
