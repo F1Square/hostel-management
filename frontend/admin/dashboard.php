@@ -1,3 +1,19 @@
+<?php
+session_start(); // Start the session
+
+// Check if the user is logged in and is an admin
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    // User is not an admin, show alert and redirect to a different page (like homepage)
+    echo "<script>
+        alert('You are not an admin. Access denied.');
+        window.location.href = '../index.php'; // Redirect to the homepage or any other page
+    </script>";
+    exit(); // Stop further execution
+}
+
+// Admin content goes here
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

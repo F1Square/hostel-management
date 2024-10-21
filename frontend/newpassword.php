@@ -7,36 +7,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if passwords match
     if ($password !== $password2) {
-        header('Location: resetPassword.php?email=' . urlencode($email) . '&token=' . urlencode($token) . '&mp=false');
-        exit();
-    }
-
-    // Regex pattern to validate the password (uppercase, lowercase, special character)
-    $passwordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/';
-
-    // Validate password
-    if (!preg_match($passwordPattern, $password)) {
-        // Redirect with an error message
-        header('Location: resetPassword.php?email=' . urlencode($email) . '&token=' . urlencode($token) . '&mp=invalid');
-        exit();
-    }
-
-    // Proceed with password update (hash it before saving)
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-    // Update the password in the database (you would perform the SQL update here)
-    $sql = "UPDATE users SET password='$hashedPassword' WHERE email='$email' AND keyToken='$token'";
-
-    if ($con->query($sql) === TRUE) {
-        echo "Password updated successfully.";
-        // Redirect to login or success page
-        header('Location: login.php');
+        echo "<script>alert('Passwords do not match. Please try again.');</script>";
     } else {
-        echo "Error updating password: " . $con->error;
+        // Regex pattern to validate the password (uppercase, lowercase, special character)
+        $passwordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/';
+
+        // Validate password
+        if (!preg_match($passwordPattern, $password)) {
+            echo "<script>alert('Password must contain at least 6 characters, including uppercase, lowercase, and a special character.');</script>";
+        } else {
+            // Proceed with password update (hash it before saving)
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+            // Database connection
+            $con = new mysqli('localhost', 'root', '', 'hostel-manage');
+            if ($con->connect_error) {
+                die("Connection failed: " . $con->connect_error);
+            }
+
+            // Update the password in the database
+            $sql = "UPDATE users SET password='$hashedPassword' WHERE email='$email' AND keyToken='$token'";
+
+            if ($con->query($sql) === TRUE) {
+                // Redirect to login page after successful update
+                echo "<script>alert('Passwords updated sucessfully ..!');</script>";
+                header('Location: login.php');
+                exit(); // Terminate the script
+            } else {
+                echo "<script>alert('Error updating password: " . $con->error . "');</script>";
+            }
+
+            $con->close();
+        }
     }
 }
-?>
 
+// Get email and token from the URL (passed from the reset link)
+if (isset($_GET['email']) && isset($_GET['token'])) {
+    $email = $_GET['email'];
+    $token = $_GET['token'];
+} else {
+    // If email and token are not present, show an error
+    die('Invalid request.');
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,15 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container text-center" style="padding-top:4%;">
-        <h3 class="display-4"> Reset Password </h3>
+        <h3 class="display-4">Reset Password</h3>
         
-        <!-- <?php
-        if (!empty($msg)) {
-            echo $msg; 
-        }
-        ?> -->
-
-        <form action="setPass.php" method="post">
+        <form action="newpassword.php" method="post">
             <p> Reset password for <?php echo htmlspecialchars($email); ?> </p><br>
             <input type="password" class="form-control" placeholder="New password" name="password" id="password" required/> <br>
             <input type="password" class="form-control" placeholder="Re-enter new password" name="password2" id="password2" required/> <br>

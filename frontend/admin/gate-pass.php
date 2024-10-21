@@ -1,10 +1,15 @@
 <?php
 // Start the session
 session_start();
-if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== 1 || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    // User is not an admin, show alert and redirect to a different page (like homepage)
+    echo "<script>
+        alert('You are not an admin. Access denied.');
+        window.location.href = '../index.php'; // Redirect to the homepage or any other page
+    </script>";
+    exit(); // Stop further execution
 }
+
 
 // Database connection
 $con = new mysqli('localhost', 'root', '', 'hostel-manage');

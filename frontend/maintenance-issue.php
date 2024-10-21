@@ -123,7 +123,7 @@
     ?>
     <div class="content">
         <div class="top-bar">
-            <h1>Maintenance Issue</h1>
+            <h1>SDHOSTEL</h1>
             <div class="user">
                 <!-- Profile image that triggers the dropdown -->
                 <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">

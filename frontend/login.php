@@ -29,6 +29,9 @@ if (isset($_POST['submit'])) {
     $adminEmail = 'admin@example.com';
     $adminPassword = 'admin123';
 
+    $watchmanEmail = 'watchman@gmail.com';
+    $watchmanpassword = 'watchman123';
+
     if (empty($email) || empty($password)) {
         $msg = "<div class='alert alert-dismissible alert-warning'>
         <button type='button' class='close' data-dismiss='alert'>&times;</button>
@@ -41,6 +44,15 @@ if (isset($_POST['submit'])) {
             $_SESSION['loggedIn'] = 1;
             $_SESSION['role'] = 'admin'; // Set role as admin
             header('Location: admin/dashboard.php'); // Redirect to the dashboard
+            exit();
+        }
+
+        else if ($email === $watchmanEmail && $password === $watchmanpassword) {
+            // Set session variables for admin
+            $_SESSION['email'] = $email;
+            $_SESSION['loggedIn'] = 1;
+            $_SESSION['role'] = 'watchman'; // Set role as admin
+            header('Location: watchman.php'); // Redirect to the dashboard
             exit();
         }
 
