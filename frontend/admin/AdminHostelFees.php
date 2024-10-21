@@ -1,4 +1,5 @@
 <?php
+require('../fpdf186/fpdf.php');  
 // Database connection
 $servername = "localhost";
 $username = "root";
@@ -11,6 +12,39 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+function generatePDFReceipt($receiptData) {
+    // Ensure the receipts folder exists
+    if (!file_exists('../receipts/')) {
+        mkdir('../receipts/', 0777, true);
+    }
+    
+    // require('../fpdf186/fpdf.php');  // Ensure the correct case
+    
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'B', 16);
+
+    // Generate receipt content
+    $pdf->Cell(40, 10, 'Receipt');
+    $pdf->Ln();
+    $pdf->Cell(40, 10, 'OTR Number: ' . $receiptData['otr_number']);
+    $pdf->Ln();
+    $pdf->Cell(40, 10, 'Amount Paid: ' . 1500);
+    $pdf->Ln();
+    // $pdf->Cell(40, 10, 'Payment Date: ' . $receiptData['payment_date']);
+    // $pdf->Ln();
+
+    // Save the PDF to a folder
+    $pdf->Output('F', '../receipts/' . $receiptData['otr_number'] . '.pdf');
+
+    // Update database with the path to the generated PDF receipt
+    global $conn;
+    $stmt = $conn->prepare("UPDATE receipts SET receipt_path = ? WHERE id = ?");
+    $receipt_path = '../receipts/' . $receiptData['otr_number'] . '.pdf';
+    $stmt->bind_param("si", $receipt_path, $receiptData['id']);
+    $stmt->execute();
+    $stmt->close();
+}
 
 // Handle approval or rejection
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
@@ -19,6 +53,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
 
     if ($action == 'approve') {
         $stmt = $conn->prepare("UPDATE receipts SET status = 'approved' WHERE id = ?");
+        $receipt_query = $conn->prepare("SELECT * FROM receipts WHERE id = ?");
+        $receipt_query->bind_param("i", $receipt_id);
+        $receipt_query->execute();
+        $receipt_result = $receipt_query->get_result();
+        $receipt_data = $receipt_result->fetch_assoc();
+        generatePDFReceipt($receipt_data); // This function will create the PDF
+        $receipt_query->close();
     } else {
         $stmt = $conn->prepare("UPDATE receipts SET status = 'rejected' WHERE id = ?");
     }

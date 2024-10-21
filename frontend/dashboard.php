@@ -1,141 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDHostel</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            height: 100%;
-        }
-
-        .menu {
-            list-style-type: none;
-            margin-top: 20px;
-        }
-
-        .menu li {
-            padding: 10px 0;
-            cursor: pointer;
-        }
-
-        .menu li:hover {
-            background-color: #444;
-        }
-
-        .menu li a {
-            text-decoration: none;
-            color: white;
-            display: block;
-            padding-left: 10px;
-        }
-
-        .menu li a:hover {
-            color: #ddd;
-        }
-
-        .content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            margin-left: 250px;
-        }
-
-        .top-bar {
-            background-color: #2c91c1;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-
-        .top-bar h1 {
-            margin-left: 20px;
-        }
-
-        .user {
-            position: relative;
-            display: inline-block;
-        }
-
-        .user img {
-            width: 30px; /* Size of the dummy image */
-            height: 30px; /* Size of the dummy image */
-            border-radius: 50%; /* Make it round */
-            cursor: pointer;
-        }
-
-        .dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            z-index: 1;
-        }
-
-        .dropdown a {
-            display: block;
-            padding: 10px 15px;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .dropdown a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .show {
-            display: block;
-        }
-
-        .main-content {
-            padding: 20px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-
-            .content {
-                margin-left: 0;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .menu li {
-                text-align: center;
-            }
-
-            .menu li a {
-                padding-left: 0;
-            }
+        p{
+            margin:20px;
         }
     </style>
     <script>
@@ -156,7 +28,6 @@
         }
     </script>
 </head>
-
 <body>
     <div class="sidebar">
         <ul class="menu">
@@ -180,9 +51,53 @@
         </div>
 
         <div class="main-content">
-            <!-- Main content goes here -->
+            <h2>User Profile</h2>
+            <?php
+            session_start(); // Start the session
+
+            // Database connection
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "hostel-manage";
+
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            // Fetch user data from the users table
+            if (isset($_SESSION['otr_number'])) {
+                $otr_number = $_SESSION['otr_number'];
+                $sql = "SELECT * FROM users WHERE otr_number = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $otr_number);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    $user = $result->fetch_assoc();
+                    ?>
+                    <div class="profile-info">
+                        <p><strong>Name:</strong> <?php echo htmlspecialchars($user['firstName']); ?></p>
+                        <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+                        <p><strong>Phone:</strong> <?php echo htmlspecialchars($user['phone']); ?></p>
+                        <p><strong>OTR Number:</strong> <?php echo htmlspecialchars($user['otr_number']); ?></p>
+                    </div>
+                    <?php
+                } else {
+                    echo "<p>No user data found.</p>";
+                }
+                $stmt->close();
+            } else {
+                echo "<p>User is not logged in.</p>";
+            }
+
+            $conn->close();
+            ?>
         </div>
     </div>
 </body>
-
 </html>
