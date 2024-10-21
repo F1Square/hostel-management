@@ -1,9 +1,22 @@
 <?php
 // Start the session to check if the user is logged in
 session_start();
-if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== 1) {
-    header('Location: login.php');
-    exit();
+if (!isset($_SESSION['role'])) {
+    // User is not an admin, show alert and redirect to a different page (like homepage)
+    echo "<script>
+        alert('You need to login first. Access denied.');
+        window.location.href = 'index.php'; // Redirect to the homepage or any other page
+    </script>";
+    exit(); // Stop further execution
+}
+
+if ($_SESSION['user_role'] !== 'student') {
+    // User is not an admin, show alert and redirect to a different page (like homepage)
+    echo "<script>
+        alert('You are not an student. Access denied.');
+        window.location.href = 'index.php'; // Redirect to the homepage or any other page
+    </script>";
+    exit(); // Stop further execution
 }
 
 // Database connection

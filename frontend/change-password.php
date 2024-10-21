@@ -1,5 +1,22 @@
 <?php
 session_start();
+if (!isset($_SESSION['role'])) {
+    // User is not an admin, show alert and redirect to a different page (like homepage)
+    echo "<script>
+        alert('You need to login first. Access denied.');
+        window.location.href = 'index.php'; // Redirect to the homepage or any other page
+    </script>";
+    exit(); // Stop further execution
+}
+
+if ($_SESSION['user_role'] !== 'student') {
+    // User is not an admin, show alert and redirect to a different page (like homepage)
+    echo "<script>
+        alert('You are not an Studnet. Access denied.');
+        window.location.href = 'index.php'; // Redirect to the homepage or any other page
+    </script>";
+    exit(); // Stop further execution
+}
 include('db_connection.php'); // Include your database connection file
 
 // Assuming the user is logged in and you have the user ID stored in the session
