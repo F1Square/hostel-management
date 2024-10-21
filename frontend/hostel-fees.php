@@ -274,7 +274,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
             <div class="modal-content">
                 <span class="close-btn" id="closeModal">&times;</span>
                 <h3>Bank Details</h3>
-                <img src="photos/Gpay.png" alt="Hostel Fees" style="width: 100%; height: auto;">
+                <img src="photos/user.webp" alt="Hostel Fees" style="width: 100%; height: auto;">
 
                 <div class="upload-section" id="uploadSection">
                     <p>Upload your transaction photos:</p>

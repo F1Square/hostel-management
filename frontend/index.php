@@ -157,32 +157,32 @@
             <!-- Full-width images with number and caption text -->
             <div class="mySlides fade">
                 <div class="numbertext">1 / 5</div>
-                <img src="photos/image1.jpeg" style="width:100%">
-                <div class="text">img1</div>
+                <img src="photos/sardar2.webp" style="width:100%">
+                <div class="text">HOSTEL</div>
             </div>
 
             <div class="mySlides fade">
                 <div class="numbertext">2 / 5</div>
-                <img src="photos/image2.jpeg" style="width:100%">
-                <div class="text">Caption Two</div>
+                <img src="photos/image1.jpeg" style="width:100%">
+                <div class="text">HOSTEL</div>
             </div>
 
             <div class="mySlides fade">
                 <div class="numbertext">3 / 5</div>
                 <img src="photos/image3.jpeg" style="width:100%">
-                <div class="text">Caption Three</div>
+                <div class="text">HOSTEL</div>
             </div>
 
             <div class="mySlides fade">
                 <div class="numbertext">4 / 5</div>
                 <img src="photos/image4.jpeg" style="width:100%">
-                <div class="text">Caption Four</div>
+                <div class="text">HOSTEL</div>
             </div>
 
             <div class="mySlides fade">
                 <div class="numbertext">5 / 5</div>
                 <img src="photos/image5.jpeg" style="width:100%">
-                <div class="text">Caption Five</div>
+                <div class="text">HOSTEL</div>
             </div>
 
             <!-- Next and previous buttons -->

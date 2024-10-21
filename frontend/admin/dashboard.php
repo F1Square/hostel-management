@@ -224,7 +224,7 @@ if ($_SESSION['role'] !== 'admin') {
             <div class="user">
                 
                 <!-- Fixed the missing quote in the src attribute -->
-                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
+                <img src="../photos/user.webp" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
                 <div id="dropdown-menu" class="dropdown">
                     <a href="../logout.php">Logout</a>
                 </div>

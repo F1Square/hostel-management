@@ -222,7 +222,7 @@ $con->close(); // Close the connection
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
                 <!-- Profile image -->
-                <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">
+                <img src="photos/user.webp" alt="Profile" onclick="toggleDropdown()">
                 <!-- Dropdown menu -->
                 <div id="dropdown" class="dropdown">
                     <a href="logout.php">Logout</a>

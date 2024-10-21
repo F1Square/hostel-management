@@ -235,7 +235,7 @@ $con->close();
 
             <div class="user">
                
-                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
+                <img src="../photos/user.webp" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
                 <div id="dropdown-menu" class="dropdown">
                     <a href="../logout.php">Logout</a>
                 </div>
