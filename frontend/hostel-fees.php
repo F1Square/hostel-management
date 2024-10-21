@@ -1,6 +1,24 @@
 <?php
 session_start(); // Ensure this is the first line
 
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hostel-manage";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Ensure OTR number is set in session
+if (!isset($_SESSION['otr_number'])) {
+    die("OTR number is not set. Please log in again.");
+}
+
 if (isset($_GET['success']) && $_GET['success'] == 1) {
     echo '<script>alert("Receipt uploaded successfully!");</script>';
 }
@@ -162,21 +180,6 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
         .main-content {
             padding: 20px;
         }
-
-        /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
-            justify-content: center; /* Center modal */
-            align-items: center; /* Center modal */
-        }
     </style>
 </head>
 <body>
@@ -190,6 +193,64 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 
             <h3>Your Approved Receipts</h3>
             <!-- Fetch and display approved receipts here -->
+            <table border="">
+    <thead>
+        <tr>
+            <th>OTR Number</th>
+            <th>Receipt</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        // Fetch all approved receipts for the logged-in student
+        $otr_number = $_SESSION['otr_number'];
+        $sql = "SELECT * FROM receipts WHERE status = 'approved' AND otr_number = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $otr_number);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0):
+            while ($row = $result->fetch_assoc()):
+        ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['otr_number']); ?></td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+        
+    <?php 
+         $receiptPath = "receipts/" . htmlspecialchars($row['receipt_path']); 
+         if (file_exists($receiptPath)): 
+         ?>
+        <a href="<?php echo $receiptPath; ?>" target="_blank">Download Receipt</a>
+        <?php else: ?>
+        <span>Receipt not available</span>
+         <?php endif; ?>
+
+
+
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <?php
+            endwhile;
+        else:
+        ?>
+        <tr>
+            <td colspan="2">No approved receipts available.</td>
+        </tr>
+        <?php
+        endif;
+        $stmt->close();
+        ?>
+    </tbody>
+</table>
+
         </div>
 
         <!-- Modal for showing image and upload form -->
@@ -202,7 +263,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                 <div class="upload-section" id="uploadSection">
                     <p>Upload your transaction photos:</p>
                     <form id="receiptUploadForm" action="upload_receipt.php" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="otr_number" value="<?php echo htmlspecialchars($otr_number_value); ?>">
+                        <input type="hidden" name="otr_number" value="<?php echo htmlspecialchars($otr_number); ?>">
                         <input type="file" id="fileInput" name="receiptFile" required>
                         <button type="submit" id="uploadBtn">Upload Receipt</button>
                     </form>
@@ -251,3 +312,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
     </script>
 </body>
 </html>
+
+<?php
+$conn->close();
+?>

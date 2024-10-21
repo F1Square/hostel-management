@@ -14,7 +14,7 @@ if ($con->connect_error) {
 }
 
 // Fetch all gate pass requests
-$query = "SELECT * FROM gatepass";
+$query = "SELECT * FROM gatepass where status = 'pending'";
 $result = $con->query($query);
 
 $data = [];
@@ -41,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update_stmt->close();
 
     // Redirect to the same page to refresh the data
-    header("Location: manage-requests.php");
-    exit();
+    // header("Location: manage-requests.php");
+    // exit();
 }
 
 $con->close();
