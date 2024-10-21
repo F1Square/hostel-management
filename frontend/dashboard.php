@@ -6,6 +6,43 @@
     <title>SDHostel</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+         .user {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .user .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .user .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user .show {
+            display: block;
+        }
+
         p{
             margin:20px;
         }
