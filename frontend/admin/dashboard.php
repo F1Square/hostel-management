@@ -6,7 +6,7 @@ if (!isset($_SESSION['role'])) {
     // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You need to login first. Access denied.');
-        window.location.href = '../index.php'; // Redirect to the homepage or any other page
+        window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
     exit(); // Stop further execution
 }
@@ -15,7 +15,7 @@ if ($_SESSION['role'] !== 'admin') {
     // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You are not an admin. Access denied.');
-        window.location.href = '../index.php'; // Redirect to the homepage or any other page
+        window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
     exit(); // Stop further execution
 }
