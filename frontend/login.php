@@ -70,6 +70,7 @@ if (isset($_POST['submit'])) {
                     // Set session variables for regular users
                     $_SESSION['email'] = $email;
                     $_SESSION['loggedIn'] = 1;
+                    $_SESSION['role'] = 'student'; // Set role as student
                     $_SESSION['otr_number'] = $data['otr_number'];
                     header('Location: dashboard.php'); // Redirect to the dashboard
                     exit();

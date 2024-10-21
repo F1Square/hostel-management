@@ -1,27 +1,3 @@
-<?php
-session_start(); // Start the session
-
-// Check if the user is logged in and is an admin
-if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
-    echo "<script>
-        alert('You need to login first. Access denied.');
-        window.location.href = 'index.php'; // Redirect to the homepage or any other page
-    </script>";
-    exit(); // Stop further execution
-}
-
-if ($_SESSION['user_role'] !== 'student') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
-    echo "<script>
-        alert('You are not an Student. Access denied.');
-        window.location.href = 'index.php'; // Redirect to the homepage or any other page
-    </script>";
-    exit(); // Stop further execution
-}
-
-// Admin content goes here
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,6 +92,24 @@ if ($_SESSION['user_role'] !== 'student') {
             <?php
             session_start(); // Start the session
 
+            if (!isset($_SESSION['role'])) {
+                // User is not an admin, show alert and redirect to a different page (like homepage)
+                echo "<script>
+                    alert('You need to login first. Access denied.');
+                    window.location.href = 'index.php'; // Redirect to the homepage or any other page
+                </script>";
+                exit(); // Stop further execution
+            }
+            
+            if ($_SESSION['role'] !== 'student') {
+                // User is not an admin, show alert and redirect to a different page (like homepage)
+                echo "<script>
+                    alert('You are not an Student. Access denied.');
+                    window.location.href = 'login.php'; // Redirect to the homepage or any other page
+                </script>";
+                exit(); // Stop further execution
+            }
+
             // Database connection
             $servername = "localhost";
             $username = "root";
@@ -144,7 +138,7 @@ if ($_SESSION['user_role'] !== 'student') {
                     <div class="profile-info">
                         <p><strong>Name:</strong> <?php echo htmlspecialchars($user['firstName']); ?></p>
                         <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-                        <p><strong>Phone:</strong> <?php echo htmlspecialchars($user['phone']); ?></p>
+                       
                         <p><strong>OTR Number:</strong> <?php echo htmlspecialchars($user['otr_number']); ?></p>
                     </div>
                     <?php

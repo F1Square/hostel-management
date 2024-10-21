@@ -9,7 +9,7 @@ if (!isset($_SESSION['role'])) {
     exit(); // Stop further execution
 }
 
-if ($_SESSION['user_role'] !== 'student') {
+if ($_SESSION['role'] !== 'student') {
     // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You are not an Studnet. Access denied.');

@@ -1,20 +1,20 @@
 <?php
 require('../fpdf186/fpdf.php'); 
-
+session_start(); 
 if (!isset($_SESSION['role'])) {
     // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You need to login first. Access denied.');
-        window.location.href = '../index.php'; // Redirect to the homepage or any other page
+        window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
     exit(); // Stop further execution
 }
 
-if ($_SESSION['user_role'] !== 'admin') {
+if ($_SESSION['role'] !== 'admin') {
     // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You are not an admin. Access denied.');
-        window.location.href = '../index.php'; // Redirect to the homepage or any other page
+        window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
     exit(); // Stop further execution
 }
@@ -47,7 +47,7 @@ function generatePDFReceipt($receiptData) {
     $pdf->Ln();
     $pdf->Cell(40, 10, 'OTR Number: ' . $receiptData['otr_number']);
     $pdf->Ln();
-    $pdf->Cell(40, 10, 'Amount Paid: ' . 1500);
+    $pdf->Cell(40, 10, 'Amount Paid: ' . 25000);
     $pdf->Ln();
     // $pdf->Cell(40, 10, 'Payment Date: ' . $receiptData['payment_date']);
     // $pdf->Ln();
@@ -317,7 +317,7 @@ $result = $conn->query($sql);
                
                 <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
                 <div id="dropdown-menu" class="dropdown">
-                    <a href="logout.php">Logout</a>
+                    <a href="../logout.php">Logout</a>
                 </div>
             </div>
         </div>

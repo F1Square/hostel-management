@@ -10,7 +10,7 @@ if (!isset($_SESSION['role'])) {
     exit(); // Stop further execution
 }
 
-if ($_SESSION['user_role'] !== 'admin') {
+if ($_SESSION['role'] !== 'admin') {
     // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You are not an admin. Access denied.');

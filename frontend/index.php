@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pateldham Hostel Management</title>
+    <title>Sardardham Hostel Management</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         * {
@@ -138,7 +138,7 @@
     <!-- Header Section -->
     <header>
         <div class="logo">
-        <a href="index.php"><h1>Pateldham </h1></a>
+        <a href="index.php"><h1>SDHOSTEL </h1></a>
         </div>
         <div class="auth-buttons">
             <a href="login.php" class="btn">Login</a>
@@ -149,7 +149,7 @@
     <!-- Main Section -->
     <main>
         <div class="description">
-            <h2>Welcome to Pateldham Hostel</h2>
+            <h2>Welcome to Sardardham Hostel</h2>
             <p>We offer the best accommodation for students with all essential amenities to make your stay comfortable and enjoyable.</p>
         </div>
         <div class="slideshow-container">
@@ -158,7 +158,7 @@
             <div class="mySlides fade">
                 <div class="numbertext">1 / 5</div>
                 <img src="photos/image1.jpeg" style="width:100%">
-                <div class="text">Caption Text</div>
+                <div class="text">img1</div>
             </div>
 
             <div class="mySlides fade">

@@ -25,31 +25,10 @@ if (isset($_POST['submit'])) {
     $password1 = $con->real_escape_string($_POST['password']);
     $password2 = $con->real_escape_string($_POST['cPassword']);
 
-    // Validate email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $msg = "<div class='alert alert-dismissible alert-warning'>
-                <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                Invalid email format.
-                </div>";
-    }
-
-    // Validate name (letters and spaces only)
-    if (!preg_match("/^[a-zA-Z ]*$/", $name)) {
-        $msg = "<div class='alert alert-dismissible alert-warning'>
-                <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                Name can only contain letters and spaces.
-                </div>";
-    }
-
-    // Password validation: At least one uppercase, lowercase, number, and special character, 6+ chars
+    // Server-side validation
     $passwordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/';
 
-    if ($password1 != $password2 || !preg_match($passwordPattern, $password1)) {
-        $msg = "<div class='alert alert-dismissible alert-warning'>
-                <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                Passwords must match and meet the required criteria.
-                </div>";
-    } else {
+    if ($password1 == $password2 && preg_match($passwordPattern, $password1) && preg_match("/^[a-zA-Z ]*$/", $name) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         // Check if email exists using prepared statements
         $stmt = $con->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -71,7 +50,7 @@ if (isset($_POST['submit'])) {
 
             if ($lastOTR) {
                 $lastOTRNumber = (int)substr($lastOTR['otr_number'], 2); // Get the last 4 digits
-                $newOTRNumber = $lastOTRNumber + 1; // Increment by 2
+                $newOTRNumber = $lastOTRNumber + 1; // Increment by 1
             } else {
                 $newOTRNumber = 1; // If no users, start with 0001
             }
@@ -135,8 +114,8 @@ if (isset($_POST['submit'])) {
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Register</title>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4xF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSMVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 
     <style>
@@ -157,22 +136,38 @@ if (isset($_POST['submit'])) {
         }
     </style>
     <script>
-        // Password validation script
-        function validatePassword() {
-            let password = document.getElementById("password").value;
-            let criteria = document.getElementById("password-criteria");
+        // Email and name validation script
+        function validateForm() {
+            let name = document.forms["registerForm"]["name"].value;
+            let email = document.forms["registerForm"]["email"].value;
+            let password = document.forms["registerForm"]["password"].value;
+            let confirmPassword = document.forms["registerForm"]["cPassword"].value;
 
-            let upperCase = /[A-Z]/.test(password);
-            let lowerCase = /[a-z]/.test(password);
-            let number = /[0-9]/.test(password);
-            let specialChar = /[\W_]/.test(password);
-            let minLength = password.length >= 6;
+            let namePattern = /^[a-zA-Z ]*$/;
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
 
-            document.getElementById("criteria-uppercase").className = upperCase ? "valid" : "invalid";
-            document.getElementById("criteria-lowercase").className = lowerCase ? "valid" : "invalid";
-            document.getElementById("criteria-number").className = number ? "valid" : "invalid";
-            document.getElementById("criteria-specialchar").className = specialChar ? "valid" : "invalid";
-            document.getElementById("criteria-length").className = minLength ? "valid" : "invalid";
+            if (!namePattern.test(name)) {
+                alert("Name can only contain letters and spaces.");
+                return false;
+            }
+
+            if (!emailPattern.test(email)) {
+                alert("Invalid email format.");
+                return false;
+            }
+
+            if (!passwordPattern.test(password)) {
+                alert("Password must be at least 6 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.");
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return false;
+            }
+
+            return true;
         }
     </script>
 </head>
@@ -180,23 +175,15 @@ if (isset($_POST['submit'])) {
     <div class="container" style="margin-top: 100px;">
         <div class="row justify-content-center">
             <div class="col-md-6 col-md-offset-3" align="center">
-                <h1 class="display-3">Register</h1> <br>
-                <?php if ($msg != "") echo $msg; ?>
-                <br>
-                <form method="post" action="register.php">
-                    <input class="form-control" name="name" placeholder="Name..." required><br>
-                    <input class="form-control" name="email"  placeholder="Email..." required><br>
-
-                    <!-- Password field -->
-                    <input class="form-control" id="password" name="password" type="password" placeholder="Password..." required oninput="validatePassword()"><br>
-
-                    <!-- Password criteria section below the password input -->
-             
-
-                   <input class="form-control" name="cPassword" type="password" placeholder="Confirm Password..." required><br>
-                    <input class="btn btn-primary" type="submit" name="submit" value="Register">
-                </form> <br>
-                <p class="lead">Already a user? <a href="login.php">Log in</a>.</p>
+                <h2>Register</h2>
+                <?php echo $msg; ?>
+                <form name="registerForm" action="register.php" onsubmit="return validateForm()" method="POST">
+                    <input class="form-control" name="name" placeholder="Name" required><br>
+                    <input class="form-control" name="email" placeholder="Email" required><br>
+                    <input class="form-control" type="password" name="password" placeholder="Password" required> <br>
+                    <input class="form-control" type="password" name="cPassword" placeholder="Confirm Password" required><br>
+                    <input class="btn btn-primary" name="submit" type="submit" value="Register"><br><br>
+                </form>
             </div>
         </div>
     </div>
