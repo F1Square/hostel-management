@@ -73,7 +73,7 @@
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
             <li><a href="change-password.php">Change Password</a></li>
-            <li><a href="update-profile.php">Update profile</a></li>
+            <li><a href="update-profile.php">Update Profile</a></li>
         </ul>
     </div>
 
@@ -139,7 +139,6 @@
                     <div class="profile-info">
                         <p><strong>Name:</strong> <?php echo htmlspecialchars($user['firstName']); ?></p>
                         <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-                       
                         <p><strong>OTR Number:</strong> <?php echo htmlspecialchars($user['otr_number']); ?></p>
                     </div>
                     <?php

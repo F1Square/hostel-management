@@ -62,27 +62,26 @@
             margin-bottom: 50px;
         }
 
-        /* Slideshow container */
+        
         .slideshow-container {
             max-width: 1000px;
             position: relative;
             margin: auto;
-            overflow: hidden; /* Hide overflow */
+            overflow: hidden; 
         }
 
-        /* Hide the images by default */
+        
         .mySlides {
             display: none;
-            width: 100%; /* Full width */
+            width: 100%; 
         }
 
-        /* Next & previous buttons */
         .prev, .next {
             cursor: pointer;
             position: absolute;
             top: 50%;
             width: auto;
-            margin-top: -22px; /* Center the buttons vertically */
+            margin-top: -22px; 
             padding: 16px;
             color: white;
             font-weight: bold;
@@ -90,23 +89,22 @@
             transition: 0.6s ease;
             border-radius: 3px;
             user-select: none;
-            background-color: rgba(0,0,0,0.6); /* Add a semi-transparent background */
-            z-index: 1; /* Ensure buttons are above images */
+            background-color: rgba(0,0,0,0.6); 
+            z-index: 1;
         }
 
         .prev {
-            left: 0; /* Position on the left */
+            left: 0; 
         }
 
         .next {
-            right: 0; /* Position on the right */
+            right: 0; 
         }
 
         .prev:hover, .next:hover {
-            background-color: rgba(0,0,0,0.8); /* Darker on hover */
+            background-color: rgba(0,0,0,0.8); 
         }
 
-        /* The dots/bullets/indicators */
         .dot {
             cursor: pointer;
             height: 15px;
@@ -122,7 +120,6 @@
             background-color: #717171;
         }
 
-        /* Footer Section */
         footer {
             background-color: #333;
             color: white;
@@ -135,7 +132,6 @@
     </style>
 </head>
 <body>
-    <!-- Header Section -->
     <header>
         <div class="logo">
         <a href="index.php"><h1>SDHOSTEL </h1></a>
@@ -146,7 +142,6 @@
         </div>
     </header>
 
-    <!-- Main Section -->
     <main>
         <div class="description">
             <h2>Welcome to Sardardham Hostel</h2>
@@ -154,7 +149,6 @@
         </div>
         <div class="slideshow-container">
 
-            <!-- Full-width images with number and caption text -->
             <div class="mySlides fade">
                 <div class="numbertext">1 / 5</div>
                 <img src="photos/sardar2.webp" style="width:100%">
@@ -185,13 +179,11 @@
                 <div class="text">HOSTEL</div>
             </div>
 
-            <!-- Next and previous buttons -->
             <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
             <a class="next" onclick="plusSlides(1)">&#10095;</a>
         </div>
         <br>
 
-        <!-- The dots/circles -->
         <div style="text-align:center">
             <span class="dot" onclick="currentSlide(1)"></span>
             <span class="dot" onclick="currentSlide(2)"></span>
@@ -201,12 +193,10 @@
         </div>
     </main>
 
-    <!-- Footer Section -->
     <footer>
         <p>© 2024 Pateldham Hostel Management. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript to manage slides -->
     <script>
         let slideIndex = 1;
         showSlides(slideIndex);

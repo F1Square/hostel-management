@@ -1,44 +1,41 @@
 <?php
-// Start the session
+
 session_start();
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = '../index.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You are not an admin. Access denied.');
         window.location.href = '../index.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 
-// Database connection
 $con = new mysqli('localhost', 'root', '', 'hostel-manage');
 
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-// Fetch all gate pass requests
 $query = "SELECT * FROM gatepass";
 $result = $con->query($query);
 
 $data = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $data[] = $row; // Collect data
+        $data[] = $row; 
     }
 }
 
-// Approve or Reject Request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $request_id = $_POST['request_id'];
     $action = $_POST['action'];
@@ -54,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update_stmt->execute();
     $update_stmt->close();
 
-    // Redirect to the same page to refresh the data
     header("Location: manage-requests.php");
     exit();
 }
@@ -150,7 +146,7 @@ $con->close();
             margin-top: 20px;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;

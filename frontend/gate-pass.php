@@ -1,39 +1,36 @@
 <?php
-// Database connection
+
 session_start();
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'student') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+
     echo "<script>
         alert('You are not an student. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "hostel-manage";
 
-// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $otr_number = $_POST['otr_number']; // Get the OTR number of the logged-in student
+    $otr_number = $_POST['otr_number']; 
     $type = $_POST['type'];
     $reason = $_POST['reason'];
     $out_time = $_POST['out_time'];
@@ -41,7 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date_from = $_POST['date_from'];
     $date_to = $_POST['date_to'];
     
-    // Insert into gatepass table
     $sql = "INSERT INTO gatepass (otr_number, type, reason, out_time, in_time, date_from, date_to, status) 
             VALUES ('$otr_number', '$type', '$reason', '$out_time', '$in_time', '$date_from', '$date_to', 'pending')";
 
@@ -130,7 +126,7 @@ $conn->close();
             text-decoration: none;
         }
 
-        /* User Profile and Dropdown Styles */
+        
         .user {
             position: relative;
             display: inline-block;
@@ -228,7 +224,6 @@ $conn->close();
             document.getElementById("dropdown").classList.toggle("show");
         }
 
-        // Close the dropdown if the user clicks outside of it
         window.onclick = function(event) {
             if (!event.target.matches('.user img')) {
                 var dropdowns = document.getElementsByClassName("dropdown");
@@ -251,7 +246,7 @@ $conn->close();
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
             <li><a href="change-password.php">Change Password</a></li>
-            <li><a href="update-profile.php">Update profile</a></li>
+            <li><a href="update-profile.php">Update Profile</a></li>
         </ul>
     </div>
 
@@ -259,9 +254,7 @@ $conn->close();
         <div class="top-bar">
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <!-- Profile image -->
                 <img src="photos/user.webp" alt="Profile" onclick="toggleDropdown()">
-                <!-- Dropdown menu -->
                 <div id="dropdown" class="dropdown">
                     <a href="logout.php">Logout</a>
                 </div>

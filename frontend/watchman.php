@@ -1,32 +1,29 @@
 <?php
-// Start the session
+
 session_start();
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'watchman') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You are not an watchman. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 date_default_timezone_set('Asia/Kolkata');
-// Database connection
+
 $con = new mysqli('localhost', 'root', '', 'hostel-manage');
 
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-// Initialize variables
 $status_message = '';
 $image = '';
 
@@ -35,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $otr_number = $_POST['otr_number'];
     $isApproved = false;
 
-    // Check if the student has an approved request
     $query = "SELECT status, date_from, out_time FROM gatepass WHERE otr_number = ? ORDER BY id DESC LIMIT 1";
     $stmt = $con->prepare($query);
     $stmt->bind_param("s", $otr_number);
@@ -45,26 +41,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($request) {
         if ($request['status'] === 'Approved') {
-            // Fetch current date and time
             $current_date = date('Y-m-d');
             $current_time = date('H:i:s');
-            // echo $current_time;
-            // Compare current date and time with the request details
+            
             if ($current_date >= $request['date_from'] && $current_time >= $request['out_time']) {
                 $status_message = 'Request approved. Student can go outside.';
-                $image = 'right.png';  // Show checkmark image
+                $image = 'right.png';  
                 $isApproved = true;
             } else {
                 $status_message = 'Request approved, but it’s not yet time to leave.';
-                $image = 'cross.png';  // Show cross image if it's not yet time to go
+                $image = 'cross.png';  
             }
         } else {
             $status_message = 'Request not approved. Student cannot go outside.';
-            $image = 'cross.png';  // Use the cross image for disapproval
+            $image = 'cross.png';  
         }
     } else {
         $status_message = 'No request found for this OTR number.';
-        $image = 'cross.png';  // Show cross image if no request exists
+        $image = 'cross.png';  
     }
 
     $stmt->close();

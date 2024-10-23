@@ -15,7 +15,7 @@ if (isset($_POST['submit'])) {
 
     $email = $con->real_escape_string($_POST['email']);
     
-    // Server-side email validation
+    
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $msg = "<div class='alert alert-dismissible alert-warning'>
             <button type='button' class='close' data-dismiss='alert'>&times;</button>
@@ -31,15 +31,12 @@ if (isset($_POST['submit'])) {
             $data = $sql1->fetch_array();
             $name = $data['firstName'];
             
-            // Token generation
             $passwordToken = hash('Sha512', 'dhumbar78barde.xembarab./a.out_o9oom88/avtya344_tyav');
             $passwordToken = str_shuffle($passwordToken);
             $token = substr($passwordToken, 12, 37); 
             
-            // Update passwordToken
             $con->query("UPDATE users SET keyToken='$token' WHERE email='$email'");
             
-            // Send RESET link via mail
             $mail = new PHPMailer();
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com'; 

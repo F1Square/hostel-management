@@ -183,26 +183,24 @@
 
     <script>
         function validateForm() {
-            // Get form fields
+            
             var phone = document.getElementById("phone").value;
             var city = document.getElementById("city").value;
             var pincode = document.getElementById("pincode").value;
 
-            // Validate phone number (first character 6-9, exactly 10 digits)
+           
             var phonePattern = /^[6-9]\d{9}$/;
             if (!phonePattern.test(phone)) {
                 alert("Please enter a valid phone number.");
                 return false;
             }
 
-            // Validate city (only alphabetic characters)
             var cityPattern = /^[a-zA-Z\s]+$/;
             if (!cityPattern.test(city)) {
                 alert("Please enter a valid city. Only alphabetic characters are allowed.");
                 return false;
             }
 
-            // Validate pincode (exactly 6 digits)
             var pincodePattern = /^\d{6}$/;
             if (!pincodePattern.test(pincode)) {
                 alert("Please enter a valid pincode. It must be exactly 6 digits.");

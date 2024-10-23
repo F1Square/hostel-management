@@ -1,51 +1,48 @@
 <?php
-// Start the session to check if the user is logged in
+
 session_start();
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'student') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You are not an student. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
-// Database connection
+
 $con = new mysqli('localhost', 'root', '', 'hostel-manage');
 
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-// Fetch gate pass and leave requests for the logged-in user
 $otr_number = $_SESSION['otr_number'];
 $query = "SELECT * FROM gatepass WHERE otr_number = ?";
 $stmt = $con->prepare($query);
-$stmt->bind_param("s", $otr_number); // Assuming otr_number is a string
+$stmt->bind_param("s", $otr_number);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $data = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $data[] = $row; // Collect data
+        $data[] = $row; 
     }
 } else {
-    // No records found
     $data = [];
 }
 
-$stmt->close(); // Close the prepared statement
-$con->close(); // Close the connection
+$stmt->close(); 
+$con->close(); 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,7 +169,7 @@ $con->close(); // Close the connection
             margin-top: 20px;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -190,7 +187,6 @@ $con->close(); // Close the connection
             document.getElementById("dropdown").classList.toggle("show");
         }
 
-        // Close the dropdown if the user clicks outside of it
         window.onclick = function(event) {
             if (!event.target.matches('.user img')) {
                 var dropdowns = document.getElementsByClassName("dropdown");
@@ -213,7 +209,7 @@ $con->close(); // Close the connection
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
             <li><a href="change-password.php">Change Password</a></li>
-            <li><a href="update-profile.php">Update profile</a></li>
+            <li><a href="update-profile.php">Update Profile</a></li>
         </ul>
     </div>
 
@@ -221,9 +217,7 @@ $con->close(); // Close the connection
         <div class="top-bar">
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
-                <!-- Profile image -->
                 <img src="photos/user.webp" alt="Profile" onclick="toggleDropdown()">
-                <!-- Dropdown menu -->
                 <div id="dropdown" class="dropdown">
                     <a href="logout.php">Logout</a>
                 </div>

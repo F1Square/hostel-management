@@ -12,20 +12,17 @@ require 'PHPMailer/SMTP.php';
 $msg = "";
 
 if (isset($_POST['submit'])) {
-    // Database connection
     $con = mysqli_connect('localhost', 'root', '', 'hostel-manage');
 
     if (!$con) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    // Sanitize and validate inputs
     $name = trim($con->real_escape_string($_POST['name']));
     $email = trim($con->real_escape_string($_POST['email']));
     $password1 = $con->real_escape_string($_POST['password']);
     $password2 = $con->real_escape_string($_POST['cPassword']);
 
-    // Server-side validation
     $passwordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/';
 
     if ($password1 == $password2 && preg_match($passwordPattern, $password1) && preg_match("/^[a-zA-Z ]*$/", $name) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -41,7 +38,7 @@ if (isset($_POST['submit'])) {
                     Email already exists in the database.
                     </div>";
         } else {
-            // Generate token and hash password
+
             $token = bin2hex(random_bytes(5)); // Generates a random token
             $hashedPassword = password_hash($password1, PASSWORD_BCRYPT);
 
@@ -49,26 +46,25 @@ if (isset($_POST['submit'])) {
             $lastOTR = $result->fetch_assoc();
 
             if ($lastOTR) {
-                $lastOTRNumber = (int)substr($lastOTR['otr_number'], 2); // Get the last 4 digits
-                $newOTRNumber = $lastOTRNumber + 1; // Increment by 1
+                $lastOTRNumber = (int)substr($lastOTR['otr_number'], 2);
+                $newOTRNumber = $lastOTRNumber + 1; 
             } else {
-                $newOTRNumber = 1; // If no users, start with 0001
+                $newOTRNumber = 1; 
             }
 
             $OTRNumber = '24' . str_pad($newOTRNumber, 4, '0', STR_PAD_LEFT);
 
-            // Insert new user using prepared statement
             $stmt = $con->prepare("INSERT INTO users (firstName, email, password, otr_number, isEmailConfirmed, token, keyToken) VALUES (?, ?, ?, ?, 0, ?, ?)");
             $stmt->bind_param("ssssss", $name, $email, $hashedPassword, $OTRNumber, $token, $token);
 
             if ($stmt->execute()) {
-                // Send verification email
+                
                 $mail = new PHPMailer();
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = 'agb709443@gmail.com'; // Replace with your email
-                $mail->Password = 'nlzudyrsmcogpbwl'; // Replace with your app-specific password
+                $mail->Username = 'agb709443@gmail.com'; 
+                $mail->Password = 'nlzudyrsmcogpbwl'; 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
@@ -122,8 +118,8 @@ if (isset($_POST['submit'])) {
         .password-criteria {
             font-size: 0.9rem;
             color: gray;
-            text-align: left; /* Ensures left alignment */
-            margin-top: -10px; /* Adjust the space above to keep it closer to the password field */
+            text-align: left; 
+            margin-top: -10px; 
         }
         .password-criteria span {
             display: block;
@@ -136,7 +132,6 @@ if (isset($_POST['submit'])) {
         }
     </style>
     <script>
-        // Email and name validation script
         function validateForm() {
             let name = document.forms["registerForm"]["name"].value;
             let email = document.forms["registerForm"]["email"].value;
@@ -182,7 +177,9 @@ if (isset($_POST['submit'])) {
                     <input class="form-control" name="email" placeholder="Email" required><br>
                     <input class="form-control" type="password" name="password" placeholder="Password" required> <br>
                     <input class="form-control" type="password" name="cPassword" placeholder="Confirm Password" required><br>
+
                     <input class="btn btn-primary" name="submit" type="submit" value="Register"><br><br>
+                    <p class="lead">already have an account? <a href="login.php">login </a> | <a href="forgotpassword.php"> Forgot password?</a></p>
                 </form>
             </div>
         </div>

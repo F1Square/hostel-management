@@ -1,19 +1,19 @@
 <?php
-// Start the session
+
 session_start();
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== 1 || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit();
 }
 
-// Database connection
+
 $con = new mysqli('localhost', 'root', '', 'hostel-manage');
 
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-// Fetch all gate pass requests
+
 $query = "SELECT * FROM gatepass";
 $result = $con->query($query);
 
@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Approve or Reject Request
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $request_id = $_POST['request_id'];
     $action = $_POST['action'];
@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update_stmt->execute();
     $update_stmt->close();
 
-    // Redirect to the same page to refresh the data
     header("Location: manage-requests.php");
     exit();
 }

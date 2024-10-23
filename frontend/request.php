@@ -119,22 +119,22 @@ body, html {
 
     <div class="form-group">
         <label for="outDate">Out Date *</label>
-        <input type="date" id="outdate" name="outdate" required>  <!-- Changed name to 'outdate' -->
+        <input type="date" id="outdate" name="outdate" required>
     </div>
 
     <div class="form-group">
         <label for="ReturnDate">Return Date *</label>
-        <input type="date" id="returndate" name="returndate" required>  <!-- Changed name to 'returndate' -->
+        <input type="date" id="returndate" name="returndate" required>  
     </div>
 
     <div class="form-group">
         <label for="outTime">Approx Out Time <span class="required">*</span></label>
-        <input type="time" id="outtime" name="outtime" required>  <!-- Changed name to 'outtime' -->
+        <input type="time" id="outtime" name="outtime" required>  
     </div>
 
     <div class="form-group">
         <label for="inTime">Approx In Time <span class="required">*</span></label>
-        <input type="time" id="intime" name="intime" required>  <!-- Changed name to 'intime' -->
+        <input type="time" id="intime" name="intime" required>
     </div>
 
     <button type="submit" class="submit-btn">Submit</button>
@@ -147,7 +147,6 @@ body, html {
     document.getElementById('gatePassForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // Get form data
     const selectType = document.getElementById('selectType').value;
     const reason = document.getElementById('reason').value;
     const outTime = document.getElementById('outtime').value;

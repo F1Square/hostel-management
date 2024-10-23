@@ -5,34 +5,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $token = $_POST['token'];
 
-    // Check if passwords match
+    
     if ($password !== $password2) {
         echo "<script>alert('Passwords do not match. Please try again.');</script>";
     } else {
-        // Regex pattern to validate the password (uppercase, lowercase, special character)
+        
         $passwordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/';
 
-        // Validate password
+        
         if (!preg_match($passwordPattern, $password)) {
             echo "<script>alert('Password must contain at least 6 characters, including uppercase, lowercase, and a special character.');</script>";
         } else {
-            // Proceed with password update (hash it before saving)
+            
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-            // Database connection
             $con = new mysqli('localhost', 'root', '', 'hostel-manage');
             if ($con->connect_error) {
                 die("Connection failed: " . $con->connect_error);
             }
 
-            // Update the password in the database
+            
             $sql = "UPDATE users SET password='$hashedPassword' WHERE email='$email' AND keyToken='$token'";
 
             if ($con->query($sql) === TRUE) {
-                // Redirect to login page after successful update
+                
                 echo "<script>alert('Passwords updated sucessfully ..!');</script>";
                 header('Location: login.php');
-                exit(); // Terminate the script
+                exit(); 
             } else {
                 echo "<script>alert('Error updating password: " . $con->error . "');</script>";
             }
@@ -42,12 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get email and token from the URL (passed from the reset link)
 if (isset($_GET['email']) && isset($_GET['token'])) {
     $email = $_GET['email'];
     $token = $_GET['token'];
 } else {
-    // If email and token are not present, show an error
     die('Invalid request.');
 }
 ?>

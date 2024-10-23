@@ -1,43 +1,40 @@
 <?php
-// Start the session
+
 session_start();
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You are not an admin. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
-// Database connection
 $con = new mysqli('localhost', 'root', '', 'hostel-manage');
 
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-// Fetch all gate pass requests
 $query = "SELECT * FROM gatepass where status = 'pending'";
 $result = $con->query($query);
 
 $data = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $data[] = $row; // Collect data
+        $data[] = $row; 
     }
 }
 
-// Approve or Reject Request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $request_id = $_POST['request_id'];
     $action = $_POST['action'];
@@ -53,9 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update_stmt->execute();
     $update_stmt->close();
 
-    // Redirect to the same page to refresh the data
-    // header("Location: manage-requests.php");
-    // exit();
+    
 }
 
 $con->close();
@@ -143,7 +138,7 @@ $con->close();
         .user {
             display: flex;
             align-items: center;
-            position: relative; /* For dropdown positioning */
+            position: relative; 
         }
 
         .user img {
@@ -151,11 +146,10 @@ $con->close();
             height: 30px;
             margin-left: 10px;
             border-radius: 50%;
-            cursor: pointer; /* Change cursor to pointer for the profile picture */
+            cursor: pointer; 
         }
         .dropdown {
             display: none;
-            /* Initially hidden */
             position: absolute;
             right: 0;
             background-color: white;
@@ -164,7 +158,7 @@ $con->close();
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-top: 90px;
             z-index: 1000;
-            /* Ensure it appears above other elements */
+            
         }
 
         .dropdown a {
@@ -187,7 +181,7 @@ $con->close();
             margin-top: 20px;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -201,13 +195,12 @@ $con->close();
         }
     </style>
      <script>
-        // Toggle dropdown visibility
+
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Close dropdown if clicked outside
         window.onclick = function (event) {
             if (!event.target.matches('.profile-pic')) {
                 const dropdowns = document.getElementsByClassName("dropdown");
@@ -247,7 +240,7 @@ $con->close();
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                       
+                       <th>OTR</th>
                         <th>Type</th>
                         <th>Reason</th>
                         <th>Out Date</th>
@@ -262,7 +255,7 @@ $con->close();
                     <?php if (!empty($data)) : ?>
                         <?php foreach ($data as $row) : ?>
                             <tr>
-                               
+                               <td><?php echo htmlspecialchars($row['otr_number']); ?></td>
                                 <td><?php echo htmlspecialchars($row['type']); ?></td>
                                 <td><?php echo htmlspecialchars($row['reason']); ?></td>
                                 <td><?php echo htmlspecialchars($row['date_from']); ?></td>

@@ -1,26 +1,23 @@
 <?php
-session_start(); // Start the session
-
-// Check if the user is logged in and is an admin
+session_start(); 
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You are not an admin. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
-// Admin content goes here
 ?>
 
 <!DOCTYPE html>
@@ -119,7 +116,7 @@ if ($_SESSION['role'] !== 'admin') {
         .user {
             display: flex;
             align-items: center;
-            position: relative; /* For dropdown positioning */
+            position: relative; 
         }
 
         .user img {
@@ -127,11 +124,11 @@ if ($_SESSION['role'] !== 'admin') {
             height: 30px;
             margin-left: 10px;
             border-radius: 50%;
-            cursor: pointer; /* Change cursor to pointer for the profile picture */
+            cursor: pointer; 
         }
 
         .dropdown {
-            display: none; /* Initially hidden */
+            display: none; 
             position: absolute;
             right: 0;
             background-color: white;
@@ -139,7 +136,7 @@ if ($_SESSION['role'] !== 'admin') {
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-top: 90px;
-            z-index: 1000; /* Ensure it appears above other elements */
+            z-index: 1000; 
         }
 
         .dropdown a {
@@ -166,7 +163,6 @@ if ($_SESSION['role'] !== 'admin') {
             color: #ddd;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -191,13 +187,12 @@ if ($_SESSION['role'] !== 'admin') {
     </style>
 
     <script>
-        // Toggle dropdown visibility
+        
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Close dropdown if clicked outside
         window.onclick = function (event) {
             if (!event.target.matches('.profile-pic')) {
                 const dropdowns = document.getElementsByClassName("dropdown");
@@ -223,7 +218,6 @@ if ($_SESSION['role'] !== 'admin') {
             <h1><a href="dashboard.php">SDHOSTEL</a></h1>
             <div class="user">
                 
-                <!-- Fixed the missing quote in the src attribute -->
                 <img src="../photos/user.webp" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
                 <div id="dropdown-menu" class="dropdown">
                     <a href="../logout.php">Logout</a>
@@ -231,7 +225,6 @@ if ($_SESSION['role'] !== 'admin') {
             </div>
         </div>
         <div class="main-content">
-            <!-- Main content goes here -->
         </div>
     </div>
 </body>

@@ -2,23 +2,23 @@
 require('../fpdf186/fpdf.php'); 
 session_start(); 
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You are not an admin. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
-// Database connection
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -26,36 +26,28 @@ $dbname = "hostel-manage";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 function generatePDFReceipt($receiptData) {
-    // Ensure the receipts folder exists
     if (!file_exists('../receipts/')) {
         mkdir('../receipts/', 0777, true);
     }
     
-    // require('../fpdf186/fpdf.php');  // Ensure the correct case
     
     $pdf = new FPDF();
     $pdf->AddPage();
     $pdf->SetFont('Arial', 'B', 16);
 
-    // Generate receipt content
     $pdf->Cell(40, 10, 'Receipt');
     $pdf->Ln();
     $pdf->Cell(40, 10, 'OTR Number: ' . $receiptData['otr_number']);
     $pdf->Ln();
     $pdf->Cell(40, 10, 'Amount Paid: ' . 25000);
     $pdf->Ln();
-    // $pdf->Cell(40, 10, 'Payment Date: ' . $receiptData['payment_date']);
-    // $pdf->Ln();
 
-    // Save the PDF to a folder
     $pdf->Output('F', '../receipts/' . $receiptData['otr_number'] . '.pdf');
 
-    // Update database with the path to the generated PDF receipt
     global $conn;
     $stmt = $conn->prepare("UPDATE receipts SET receipt_path = ? WHERE id = ?");
     $receipt_path = '../receipts/' . $receiptData['otr_number'] . '.pdf';
@@ -64,7 +56,6 @@ function generatePDFReceipt($receiptData) {
     $stmt->close();
 }
 
-// Handle approval or rejection
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
     $receipt_id = $_POST['receipt_id'];
     $action = $_POST['action'];
@@ -76,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
         $receipt_query->execute();
         $receipt_result = $receipt_query->get_result();
         $receipt_data = $receipt_result->fetch_assoc();
-        generatePDFReceipt($receipt_data); // This function will create the PDF
+        generatePDFReceipt($receipt_data); 
         $receipt_query->close();
     } else {
         $stmt = $conn->prepare("UPDATE receipts SET status = 'rejected' WHERE id = ?");
@@ -189,7 +180,7 @@ $result = $conn->query($sql);
             display: flex;
             align-items: center;
             position: relative;
-            /* For dropdown positioning */
+            
         }
 
         .user img {
@@ -198,12 +189,11 @@ $result = $conn->query($sql);
             margin-left: 10px;
             border-radius: 50%;
             cursor: pointer;
-            /* Change cursor to pointer for the profile picture */
+            
         }
 
         .dropdown {
             display: none;
-            /* Initially hidden */
             position: absolute;
             right: 0;
             background-color: white;
@@ -212,7 +202,7 @@ $result = $conn->query($sql);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-top: 90px;
             z-index: 1000;
-            /* Ensure it appears above other elements */
+           
         }
 
         .dropdown a {
@@ -230,10 +220,10 @@ $result = $conn->query($sql);
             padding: 20px;
             flex: 1;
             margin-top: 20px;
-            /* Adjusted margin for top spacing */
+
         }
 
-        /* Table Styles */
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -256,7 +246,7 @@ $result = $conn->query($sql);
             background-color: #f9f9f9;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -281,13 +271,12 @@ $result = $conn->query($sql);
     </style>
 
     <script>
-        // Toggle dropdown visibility
+        
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Close dropdown if clicked outside
         window.onclick = function (event) {
             if (!event.target.matches('.profile-pic')) {
                 const dropdowns = document.getElementsByClassName("dropdown");

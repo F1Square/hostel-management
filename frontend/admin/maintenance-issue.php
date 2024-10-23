@@ -1,25 +1,24 @@
 <?php
-session_start(); // Start the session
+session_start();
 
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+    
     echo "<script>
         alert('You are not an admin. Access denied.');
         window.location.href = '../login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
-// Database connection
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -27,12 +26,11 @@ $dbname = "hostel-manage";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch maintenance issues from the database
 $sql = "SELECT id, otr_number, issue, submitted_at FROM maintenance_issues ORDER BY submitted_at DESC"; // You can adjust the order as needed
 $result = $conn->query($sql);
 ?>
@@ -43,9 +41,9 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Maintenance Issues</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Basic table styling */
+        
         * {
             margin: 0;
             padding: 0;
@@ -65,7 +63,6 @@ $result = $conn->query($sql);
             color: white;
             padding: 20px;
             position: fixed;
-            /* Keep the sidebar fixed on the left */
             height: 100%;
         }
 
@@ -101,9 +98,9 @@ $result = $conn->query($sql);
 
         .menu li a {
             text-decoration: none;
-            /* Remove underline from links */
+            
             color: white;
-            /* Set button (link) color to white */
+            
             width: 100%;
             display: block;
             padding-left: 10px;
@@ -111,7 +108,7 @@ $result = $conn->query($sql);
 
         .menu li a:hover {
             color: #ddd;
-            /* Optional hover color */
+            
         }
 
         .content {
@@ -119,7 +116,7 @@ $result = $conn->query($sql);
             display: flex;
             flex-direction: column;
             margin-left: 250px;
-            /* Adjust for the sidebar width */
+            
         }
 
         .top-bar {
@@ -146,12 +143,10 @@ $result = $conn->query($sql);
             margin-left: 10px;
             border-radius: 50%;
             text-decoration: none;
-            /* Remove underline from image inside links */
         }
 
         .dropdown {
             display: none;
-            /* Initially hidden */
             position: absolute;
             right: 0;
             background-color: white;
@@ -160,7 +155,6 @@ $result = $conn->query($sql);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-top: 90px;
             z-index: 1000;
-            /* Ensure it appears above other elements */
         }
 
         .dropdown a {
@@ -180,18 +174,17 @@ $result = $conn->query($sql);
 
         .top-bar h1 a {
             color: white;
-            /* Set the link color to white */
             text-decoration: none;
-            /* Remove underline from the link */
+            
         }
 
         .top-bar h1 a:hover {
             color: #ddd;
-            /* Optional: Change color on hover */
+
         }
 
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -235,13 +228,12 @@ $result = $conn->query($sql);
         }
     </style>
     <script>
-        // Toggle dropdown visibility
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Close dropdown if clicked outside
+        
         window.onclick = function (event) {
             if (!event.target.matches('.profile-pic')) {
                 const dropdowns = document.getElementsByClassName("dropdown");
@@ -261,7 +253,6 @@ $result = $conn->query($sql);
           
         </ul>
     </div>
-     <!-- Include your sidebar -->
     <div class="content">
     <div class="top-bar">
         <h1><a href="dashboard.php" style="color: white; text-decoration: none;">SDHOSTEL</a></h1>

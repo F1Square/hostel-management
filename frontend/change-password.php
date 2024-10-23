@@ -1,31 +1,28 @@
 <?php
 session_start();
 if (!isset($_SESSION['role'])) {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
+
     echo "<script>
         alert('You need to login first. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
 
 if ($_SESSION['role'] !== 'student') {
-    // User is not an admin, show alert and redirect to a different page (like homepage)
     echo "<script>
         alert('You are not an Studnet. Access denied.');
         window.location.href = 'login.php'; // Redirect to the homepage or any other page
     </script>";
-    exit(); // Stop further execution
+    exit(); 
 }
-include('db_connection.php'); // Include your database connection file
+include('db_connection.php');
 
-// Assuming the user is logged in and you have the user ID stored in the session
 $user_id = $_SESSION['otr_number'];
 
-// Fetch the user's old password hash from the database
 $sql = "SELECT password FROM users WHERE otr_number = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id); // Bind the user_id parameter
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
 $stmt->bind_result($storedPasswordHash);
 $stmt->fetch();
@@ -36,34 +33,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Verify if the old password matches the stored password
     if (!password_verify($old_password, $storedPasswordHash)) {
         echo "<script>alert('Old password is incorrect!'); window.location.href='change-password.php';</script>";
         exit;
     }
 
-    // Check if the new password meets the complexity requirements
     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $new_password)) {
         echo "<script>alert('New password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character.'); window.location.href='change-password.php';</script>";
         exit;
     }
 
-    // Check if new password and confirm password match
     if ($new_password !== $confirm_password) {
         echo "<script>alert('New password and confirm password do not match!'); window.location.href='change-password.php';</script>";
         exit;
     }
 
-    // Hash the new password
     $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-    // Update the password in the database
     $sql = "UPDATE users SET password = ? WHERE otr_number = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $new_password_hash, $user_id);
     $stmt->execute();
 
-    // Assuming password update is successful
     echo "<script>alert('Password changed successfully!'); window.location.href='change-password.php';</script>";
     exit;
 }
@@ -258,11 +249,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             var newPassword = document.getElementById("new_password").value;
             var confirmPassword = document.getElementById("confirm_password").value;
 
-            // Regular expression to check password complexity
-            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
             if (!regex.test(newPassword)) {
-                alert("New password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character.");
+                alert("New password must contain at least 6 characters, one uppercase letter, one lowercase letter, one digit, and one special character.");
                 return false;
             }
 
@@ -271,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 return false;
             }
 
-            return true;  // If everything is valid, allow form submission
+            return true;  
         }
     </script>
 </head>
@@ -284,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
             <li><a href="gate-pass-status.php">Status</a></li>
             <li><a href="change-password.php">Change Password</a></li>
-            <li><a href="update-profile.php">Update profile</a></li>
+            <li><a href="update-profile.php">Update Profile</a></li>
         </ul>
     </div>
 

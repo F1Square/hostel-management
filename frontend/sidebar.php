@@ -5,6 +5,6 @@
         <li><i class="icon"></i><a href="gate-pass.php">Gate Pass & Leave</a></li>
         <li><a href="gate-pass-status.php">Status</a></li>
         <li><i class="icon"></i><a href="change-password.php">Change Password</a></li>
-        <li><a href="update-profile.php">Update profile</a></li>
+        <li><a href="update-profile.php">Update Profile</a></li>
     </ul>
 </div>

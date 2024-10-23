@@ -2,7 +2,6 @@
 session_start();
 $msg = "";
 
-// Handle success or error messages based on reset password or other actions
 if (isset($_GET['resetStatus'])) {
     $resetStatus = $_GET['resetStatus'];
     if ($resetStatus == 'success') {
@@ -16,7 +15,7 @@ if (isset($_SESSION['errMsg'])) {
     $msg .= "<div class='alert alert-dismissible alert-warning'>
     <button type='button' class='close' data-dismiss='alert'>&times;</button>
     {$_SESSION['errMsg']} </div>";
-    unset($_SESSION['errMsg']); // Clear the session message after displaying
+    unset($_SESSION['errMsg']); 
 }
 
 if (isset($_POST['submit'])) {
@@ -25,8 +24,7 @@ if (isset($_POST['submit'])) {
     $email = $con->real_escape_string($_POST['email']);
     $password = $con->real_escape_string($_POST['password']);
 
-    // Dummy admin credentials
-    $adminEmail = 'admin@example.com';
+    $adminEmail = 'admin@gmail.com';
     $adminPassword = 'admin123';
 
     $watchmanEmail = 'watchman@gmail.com';
@@ -37,26 +35,24 @@ if (isset($_POST['submit'])) {
         <button type='button' class='close' data-dismiss='alert'>&times;</button>
         Please fill in all fields. </div>";
     } else {
-        // Check for dummy admin credentials first
         if ($email === $adminEmail && $password === $adminPassword) {
-            // Set session variables for admin
             $_SESSION['email'] = $email;
             $_SESSION['loggedIn'] = 1;
-            $_SESSION['role'] = 'admin'; // Set role as admin
-            header('Location: admin/dashboard.php'); // Redirect to the dashboard
+            $_SESSION['role'] = 'admin'; 
+            header('Location: admin/dashboard.php'); 
             exit();
         }
 
         else if ($email === $watchmanEmail && $password === $watchmanpassword) {
-            // Set session variables for admin
+            
             $_SESSION['email'] = $email;
             $_SESSION['loggedIn'] = 1;
-            $_SESSION['role'] = 'watchman'; // Set role as admin
-            header('Location: watchman.php'); // Redirect to the dashboard
+            $_SESSION['role'] = 'watchman'; 
+            header('Location: watchman.php'); 
             exit();
         }
 
-        // Check user existence and validate credentials from the database
+        
         $sql = $con->query("SELECT id, password, isEmailConfirmed, otr_number FROM users WHERE email='$email'");
 
         if ($sql->num_rows > 0) {
@@ -67,12 +63,12 @@ if (isset($_POST['submit'])) {
                     <button type='button' class='close' data-dismiss='alert'>&times;</button>
                     Please verify your email! </div>";
                 } else {
-                    // Set session variables for regular users
+                    
                     $_SESSION['email'] = $email;
                     $_SESSION['loggedIn'] = 1;
-                    $_SESSION['role'] = 'student'; // Set role as student
+                    $_SESSION['role'] = 'student'; 
                     $_SESSION['otr_number'] = $data['otr_number'];
-                    header('Location: dashboard.php'); // Redirect to the dashboard
+                    header('Location: dashboard.php');
                     exit();
                 }
             } else {

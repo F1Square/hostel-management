@@ -6,51 +6,46 @@
     <title>Maintenance Issue</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Textarea styling */
+
         
         textarea {
-            resize: none; /* Disable resizing */
-            padding: 10px; /* Inner padding */
-            border: 2px solid #3498db; /* Thicker border */
-            border-radius: 4px; /* Rounded corners */
-            font-size: 16px; /* Font size */
-            margin-bottom: 20px; /* Space below the textarea */
-            transition: border-color 0.3s; /* Smooth transition for border color */
-            width: 100%; /* Full width */
-            box-sizing: border-box; /* Include padding and border in width */
+            resize: none; 
+            padding: 10px; 
+            border: 2px solid #3498db; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            margin-bottom: 20px; 
+            transition: border-color 0.3s;
+            width: 100%; 
+            box-sizing: border-box; 
         }
 
-        /* Textarea focus effect */
         textarea:focus {
-            border-color: #2980b9; /* Darker border on focus */
-            outline: none; /* Remove default outline */
+            border-color: #2980b9; 
+            outline: none; 
         }
 
-        /* Submit button styling */
         input[type="submit"] {
-            background-color: #3498db; /* Button color */
-            color: white; /* Text color */
-            border: none; /* Remove border */
-            padding: 10px 15px; /* Padding */
-            border-radius: 4px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
-            font-size: 16px; /* Font size */
-            transition: background-color 0.3s; /* Smooth transition for background color */
-            width: 100%; /* Full width */
-            box-sizing: border-box; /* Include padding in width */
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: background-color 0.3s; 
+            width: 100%; 
+            box-sizing: border-box; 
         }
 
-        /* Button hover effect */
         input[type="submit"]:hover {
-            background-color: #2980b9; /* Darker shade on hover */
+            background-color: #2980b9; 
         }
 
-        /* Button active effect */
         input[type="submit"]:active {
-            background-color: #1a6d99; /* Even darker shade on active */
+            background-color: #1a6d99; 
         }
 
-        /* Top bar styling */
         .top-bar {
             background-color: #2c91c1;
             color: white;
@@ -102,7 +97,6 @@
             document.getElementById("dropdown").classList.toggle("show");
         }
 
-        // Close the dropdown if the user clicks outside of it
         window.onclick = function(event) {
             if (!event.target.matches('.user img')) {
                 var dropdowns = document.getElementsByClassName("dropdown");
@@ -118,23 +112,23 @@
 </head>
 <body>
     <?php 
-    session_start(); // Start the session
+    session_start(); 
     if (!isset($_SESSION['role'])) {
-        // User is not an admin, show alert and redirect to a different page (like homepage)
+        
         echo "<script>
             alert('You need to login first. Access denied.');
             window.location.href = 'login.php'; // Redirect to the homepage or any other page
         </script>";
-        exit(); // Stop further execution
+        exit(); 
     }
     
     if ($_SESSION['role'] !== 'student') {
-        // User is not an admin, show alert and redirect to a different page (like homepage)
+        
         echo "<script>
             alert('You are not an student. Access denied.');
             window.location.href = 'login.php'; // Redirect to the homepage or any other page
         </script>";
-        exit(); // Stop further execution
+        exit(); 
     }
     include 'sidebar.php'; 
     ?>
@@ -142,9 +136,9 @@
         <div class="top-bar">
             <h1>SDHOSTEL</h1>
             <div class="user">
-                <!-- Profile image that triggers the dropdown -->
+                
                 <img src="photos/user.webp" alt="Profile" onclick="toggleDropdown()">
-                <!-- Dropdown menu for logout -->
+                
                 <div id="dropdown" class="dropdown">
                     <a href="logout.php">Logout</a>
                 </div>
