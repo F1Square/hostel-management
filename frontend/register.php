@@ -61,14 +61,14 @@ if (isset($_POST['submit'])) {
                 
                 $mail = new PHPMailer();
                 $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
+                $mail->Host = 'host';
                 $mail->SMTPAuth = true;
-                $mail->Username = 'agb709443@gmail.com'; 
-                $mail->Password = 'nlzudyrsmcogpbwl'; 
+                $mail->Username = 'email'; 
+                $mail->Password = 'password'; 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                $mail->setFrom('agb709443@gmail.com', 'Hostel Management System');
+                $mail->setFrom('email', 'Hostel Management System');
                 $mail->addAddress($email, $name);
                 $mail->Subject = "Please verify your email!";
                 $mail->isHTML(true);
